@@ -1,4 +1,4 @@
-//#define MiriSDR
+//#define SDRPlay
 
 #include <utils/flog.h>
 #include <module.h>
@@ -114,12 +114,12 @@ public:
         config.release();
         selectBySerial(confSerial);
 
-        sigpath::sourceManager.registerSource("MiriSDR", &handler);
+        sigpath::sourceManager.registerSource("", &handler);
     }
 
     ~MirisdrSourceModule() {
         stop(this);
-        sigpath::sourceManager.unregisterSource("MiriSDR");
+        sigpath::sourceManager.unregisterSource("");
     }
 
     void postInit() {}
@@ -229,7 +229,7 @@ private:
         MirisdrSourceModule* _this = (MirisdrSourceModule*)ctx;
         if (_this->running) { return; }
         if (_this->selectedSerial == "") {
-            flog::error("Tried to start MiriSDR source with empty serial");
+            flog::error("Tried to start  source with empty serial");
             return;
         }
 
@@ -255,7 +255,7 @@ private:
             flog::error("Could not open Mirisdr {0} id {1} cnt {2}", _this->selectedSerial, id, cnt);
             return;
         }
-        #ifndef MiriSDR
+        #ifndef SDRPlay
         if(mirisdr_set_hw_flavour(_this->openDev, MIRISDR_HW_DEFAULT)) {
             flog::error("Could not set Mirisdr hw flavour {0}", _this->selectedSerial);
             return;
