@@ -1,5 +1,7 @@
 # SDRMinusMinus
 SDRPlusPlus but does not need to use glfw, currently it does do MiriSDR only and server mode, it is made to be server mode, from what i can see: it decreased the file lenght (with gui) from 2.7M to 1.6, chatgpt says its 40.7% diffrence
+
+note that this release does not have a gui mode, you **need** to run it with `-s` to do anything
 # Requirements
 - a linux pc
 - ability to control it
