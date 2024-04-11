@@ -1,3 +1,5 @@
+//#define MiriSDR
+
 #include <utils/flog.h>
 #include <module.h>
 #include <signal_path/signal_path.h>
@@ -253,10 +255,17 @@ private:
             flog::error("Could not open Mirisdr {0} id {1} cnt {2}", _this->selectedSerial, id, cnt);
             return;
         }
+        #ifndef MiriSDR
         if(mirisdr_set_hw_flavour(_this->openDev, MIRISDR_HW_DEFAULT)) {
             flog::error("Could not set Mirisdr hw flavour {0}", _this->selectedSerial);
             return;
         }
+        #else
+        if(mirisdr_set_hw_flavour(_this->openDev, MIRISDR_HW_SDRPLAY)) {
+            flog::error("Could not set Mirisdr hw flavour {0}", _this->selectedSerial);
+            return;
+        }
+        #endif
         if(mirisdr_set_sample_format(_this->openDev, "AUTO")) {
             flog::error("Could not set Mirisdr sample format {0}", _this->selectedSerial);
             return;
