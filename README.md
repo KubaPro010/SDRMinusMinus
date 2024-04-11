@@ -12,6 +12,10 @@ note that this release does not have a gui mode, you **need** to run it with `-s
 - cmake
 # how to compile
 clone this: `git clone https://github.com/KubaPro010/SDRMinusMinus`<br>
+### For SDRPlay Users
+libmirisdr-5 has a sdrplay flavour option, by default its gonna be the defualt flavour, so clone flavour, however if something isnt working with the sdrplay then you can go to: `source_modules/mirisdr_source/src` and then open the main.cpp file, at the start you'll have ``//#define SDRPlay``, remove the prefix slashes so its ``#define SDRPlay`` and (re)compile, just from the `make -j`.... (with that too, to not be confused for some reason that confuses me always)
+<br><br>
+anyways now just navigate to the dir create the go to the build dir initialize cmake and make, make install
 ```
 cd SDRMinusMinus
 mkdir build
