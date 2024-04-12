@@ -114,12 +114,12 @@ public:
         config.release();
         selectBySerial(confSerial);
 
-        sigpath::sourceManager.registerSource("", &handler);
+        sigpath::sourceManager.registerSource("MiriSDR", &handler);
     }
 
     ~MirisdrSourceModule() {
         stop(this);
-        sigpath::sourceManager.unregisterSource("");
+        sigpath::sourceManager.unregisterSource("MiriSDR");
     }
 
     void postInit() {}
