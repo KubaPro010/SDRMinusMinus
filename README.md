@@ -10,6 +10,10 @@ note that this release does not have a gui mode, you **need** to run it with `-s
 - a mirisdr sdr, a sdrplay can work as a mirisdr
 - libmirisdr-5
 - cmake
+- libvolk
+- fftw3
+- zstd
+- libusb
 # how to compile
 clone this: `git clone https://github.com/KubaPro010/SDRMinusMinus`<br>
 ### For SDRPlay Users
