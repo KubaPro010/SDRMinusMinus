@@ -47,6 +47,10 @@ if (MSVC)
     # Volk
     target_link_libraries(sdrpp_core PUBLIC volk)
 
+    # FFTW3
+    find_package(FFTW3f CONFIG REQUIRED)
+    target_link_libraries(sdrpp_core PUBLIC FFTW3::fftw3f)
+
     # WinSock2
     target_link_libraries(sdrpp_core PUBLIC wsock32 ws2_32 iphlpapi)
 
@@ -56,12 +60,14 @@ if (MSVC)
 else()
     find_package(PkgConfig)
 
+    pkg_check_modules(FFTW3 REQUIRED fftw3f)
     pkg_check_modules(VOLK REQUIRED volk)
     pkg_check_modules(LIBZSTD REQUIRED libzstd)
 
     target_include_directories(sdrpp_core PUBLIC
         ${VOLK_INCLUDE_DIRS}
         ${LIBZSTD_INCLUDE_DIRS}
+        ${FFTW3_INCLUDE_DIRS}
     )
     
     target_link_directories(sdrpp_core PUBLIC
@@ -69,6 +75,7 @@ else()
         ${FFTW3_LIBRARY_DIRS}
         ${VOLK_LIBRARY_DIRS}
         ${LIBZSTD_LIBRARY_DIRS}
+        ${FFTW3_INCLUDE_DIRS}
     )
 
     target_link_libraries(sdrpp_core PUBLIC
@@ -76,6 +83,7 @@ else()
         ${FFTW3_LIBRARIES}
         ${VOLK_LIBRARIES}
         ${LIBZSTD_LIBRARIES}
+        ${FFTW3_INCLUDE_DIRS}
     )
 
     if (NOT USE_INTERNAL_LIBCORRECT)
