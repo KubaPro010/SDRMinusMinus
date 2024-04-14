@@ -633,7 +633,6 @@ namespace SmGui {
 
     bool InputText(const char *label, char *buf, size_t buf_size, ImGuiInputTextFlags flags) {
         nextItemFillWidth = false;
-        if (!serverMode) { return ImGui::InputText(label, buf, buf_size, flags); }
         if (rdl) {
             rdl->pushStep(DRAW_STEP_INPUT_TEXT, forceSyncForNext);
             rdl->pushString(label);
