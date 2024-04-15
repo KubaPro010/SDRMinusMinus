@@ -229,7 +229,7 @@ private:
         MirisdrSourceModule* _this = (MirisdrSourceModule*)ctx;
         if (_this->running) { return; }
         if (_this->selectedSerial == "") {
-            flog::error("Tried to start  source with empty serial");
+            flog::error("Tried to start source with empty serial");
             return;
         }
 
@@ -384,6 +384,7 @@ private:
             default:
                 bandwid = 1536000;
                 break;
+            //minimal sample rate is 1.54, setting the bandwidht lower than 1.536 is pointless
             }
         }
         return bandwid;

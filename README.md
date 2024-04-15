@@ -1,5 +1,5 @@
 # SDRMinusMinus
-SDRPlusPlus but does not need to use glfw, currently it does do MiriSDR only and server mode, it is made to be in server mode, from what i can see: it decreased the file lenght of the core module: (with gui) from 2.7M to (wait for it).....485 kilobytes, chatgpt says its 82.45% diffrence
+SDRPlusPlus but does not need to use glfw, currently it does do MiriSDR only and server mode, it is made to be in server mode, from what i can see: it decreased the file lenght of the core module: (with gui) from 2.783992M to (wait for it).....490.624 kilobytes, chatgpt says its 82.37% diffrence, in my server iwht `-j4` the app compiles in 59s
 
 note that this release does not have a gui mode, you **need** to run it with `-s` to do anything
 # Requirements

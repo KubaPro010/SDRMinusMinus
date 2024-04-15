@@ -8,14 +8,6 @@
 #include <Windows.h>
 #endif
 
-#ifdef __ANDROID__
-#include <android/log.h>
-#ifndef FLOG_ANDROID_TAG
-#define FLOG_ANDROID_TAG    "flog"
-#endif
-#endif
-
-
 #define FORMAT_BUF_SIZE 16
 #define ESCAPE_CHAR     '\\'
 
@@ -44,15 +36,6 @@ namespace flog {
         "\x1B[32m",
         "\x1B[33m",
         "\x1B[31m",
-    };
-#endif
-
-#ifdef __ANDROID__
-    const android_LogPriority TYPE_PRIORITIES[_TYPE_COUNT] = {
-        ANDROID_LOG_DEBUG,
-        ANDROID_LOG_INFO,
-        ANDROID_LOG_WARN,
-        ANDROID_LOG_ERROR
     };
 #endif
 
@@ -167,10 +150,6 @@ namespace flog {
             // Switch back to default color and print rest of log string
             SetConsoleTextAttribute(conHndl, COLOR_WHITE);
             fprintf(outStream, "] %s\n", out.c_str());
-#elif defined(__ANDROID__)
-            // Print format string
-            __android_log_print(TYPE_PRIORITIES[type], FLOG_ANDROID_TAG, COLOR_WHITE "[%02d/%02d/%02d %02d:%02d:%02d.%03d] [%s%s" COLOR_WHITE "] %s\n",
-                    nowc->tm_mday, nowc->tm_mon + 1, nowc->tm_year + 1900, nowc->tm_hour, nowc->tm_min, nowc->tm_sec, 0, TYPE_COLORS[type], TYPE_STR[type], out.c_str());
 #else
             // Print format string
             fprintf(outStream, COLOR_WHITE "[%02d/%02d/%02d %02d:%02d:%02d.%03d] [%s%s" COLOR_WHITE "] %s\n",

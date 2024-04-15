@@ -25,7 +25,7 @@ namespace core {
 
 // main
 int sdrpp_main(int argc, char* argv[]) {
-    flog::info("SDR++ v" VERSION_STR);
+    flog::info("SDR-- v" VERSION_STR);
     core::args.defineAll();
     if (core::args.parse(argc, argv) < 0) { return -1; } 
 
@@ -81,7 +81,8 @@ int sdrpp_main(int argc, char* argv[]) {
 
     if (serverMode) { return server::main(); }
     else {
-        flog::error("This release is for server only, as the gui parts were literally removed");
+        flog::error("This release is for server only, to get a GUI version, download SDR++");
+        return 1;
     }
     flog::info("Exiting successfully");
     return 0;
