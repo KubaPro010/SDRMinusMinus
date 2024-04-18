@@ -21,17 +21,12 @@ namespace SmGui {
     std::string diffId = "";
     DrawListElem diffValue;
     bool nextItemFillWidth = false;
-    bool serverMode = false;
 
     std::string ImStrToString(const char* imstr) {
         int len = 0;
         const char* end = imstr;
         while (*end) { end += strlen(end) + 1; }
         return std::string(imstr, end);
-    }
-
-    void init(bool server) {
-        serverMode = server;
     }
     
     // Rec/Play functions

@@ -50,7 +50,6 @@ void SourceManager::selectSource(std::string name) {
     selectedHandler->selectHandler(selectedHandler->ctx);
     selectedName = name;
     server::setInput(selectedHandler->stream);
-    // Set server input here
 }
 
 void SourceManager::showSelectedMenu() {
@@ -78,23 +77,7 @@ void SourceManager::tune(double freq) {
     if (selectedHandler == NULL) {
         return;
     }
-    // TODO: No need to always retune the hardware in panadpter mode
-    selectedHandler->tuneHandler(((tuneMode == TuningMode::NORMAL) ? freq : ifFreq) + tuneOffset, selectedHandler->ctx);
+    selectedHandler->tuneHandler(freq, selectedHandler->ctx);
     onRetune.emit(freq);
     currentFreq = freq;
-}
-
-void SourceManager::setTuningOffset(double offset) {
-    tuneOffset = offset;
-    tune(currentFreq);
-}
-
-void SourceManager::setTuningMode(TuningMode mode) {
-    tuneMode = mode;
-    tune(currentFreq);
-}
-
-void SourceManager::setPanadpterIF(double freq) {
-    ifFreq = freq;
-    tune(currentFreq);
 }

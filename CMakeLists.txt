@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 project(sdrpp)
 option(OPT_OVERRIDE_STD_FILESYSTEM "Use a local version of std::filesystem on systems that don't have it yet" OFF)
-option(USE_INTERNAL_LIBCORRECT "Use an internal version of libcorrect" ON)
+
 set(SDRPP_MODULE_CMAKE "${CMAKE_SOURCE_DIR}/sdrpp_module.cmake")
 
 set(SDRPP_CORE_ROOT "${CMAKE_SOURCE_DIR}/core/src/")

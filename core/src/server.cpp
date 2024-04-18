@@ -12,6 +12,11 @@
 #include "dsp/sink/handler_sink.h"
 #include <zstd.h>
 
+#define LoadedModuleName "MiriSDR"
+#define ModuleName "mirisdr_source"
+
+#define SourceName "MiriSDR"
+
 namespace server {
     dsp::stream<dsp::complex_t> dummyInput;
     dsp::compression::SampleStreamCompressor comp;
@@ -40,7 +45,7 @@ namespace server {
 
     net::Listener listener;
 
-    OptionList<std::string, std::string> sourceList;
+    // OptionList<std::string, std::string> sourceList;
     int sourceId = 0;
     bool running = false;
     bool compression = false;
@@ -50,7 +55,7 @@ namespace server {
         flog::info("=====| SERVER MODE |=====");
 
         // Init DSP
-        comp.init(&dummyInput, dsp::compression::PCM_TYPE_I8);
+        comp.init(&dummyInput, dsp::compression::PCM_TYPE_I16);
         hnd.init(&comp.out, _testServerHandler, NULL);
         rbuf = new uint8_t[SERVER_MAX_PACKET_SIZE];
         sbuf = new uint8_t[SERVER_MAX_PACKET_SIZE];
@@ -81,9 +86,6 @@ namespace server {
         core::configManager.release();
         modulesDir = std::filesystem::absolute(modulesDir).string();
 
-        // Initialize SmGui in server mode
-        SmGui::init(true);
-
         if (std::filesystem::is_directory(modulesDir)) {
             for (const auto& file : std::filesystem::directory_iterator(modulesDir)) {
                 std::string path = file.path().generic_string();
@@ -101,18 +103,18 @@ namespace server {
         else {
             flog::warn("Module directory {0} does not exist, not loading modules from directory", modulesDir);
         }
-	    core::moduleManager.createInstance("MiriSDR", "mirisdr_source");
+	    core::moduleManager.createInstance(LoadedModuleName, ModuleName);
 
         // Do post-init
         core::moduleManager.doPostInitAll();
 
         // Generate source list
-        auto list = sigpath::sourceManager.getSourceNames();
-        for (auto& name : list) {
-            sourceList.define(name, name);
-        }
+        // auto list = sigpath::sourceManager.getSourceNames();
+        // for (auto& name : list) {
+        //     sourceList.define(name, name);
+        // }
 
-        sigpath::sourceManager.selectSource("MiriSDR");
+        sigpath::sourceManager.selectSource(SourceName);
 
         // TODO: Use command line option
         std::string host = (std::string)core::args["addr"];
@@ -121,7 +123,9 @@ namespace server {
         listener->acceptAsync(_clientHandler, NULL);
 
         flog::info("Ready, listening on {0}:{1}", host, port);
-        while(1) { std::this_thread::sleep_for(std::chrono::milliseconds(100)); }
+        while(1) { 
+            std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
+        }
 
         return 0;
     }
@@ -159,8 +163,6 @@ namespace server {
         compression = false;
 
         sendSampleRate(sampleRate);
-
-        // TODO: Wait otherwise someone else could connect
 
         listener->acceptAsync(_clientHandler, NULL);
     }
@@ -270,14 +272,14 @@ namespace server {
     }
 
     void drawMenu() {
-        if (running) { SmGui::BeginDisabled(); }
-        SmGui::FillWidth();
-        SmGui::ForceSync();
+        // if (running) { SmGui::BeginDisabled(); }
+        // SmGui::FillWidth();
+        // SmGui::ForceSync();
         // if (SmGui::Combo("##sdrpp_server_src_sel", &sourceId, sourceList.txt)) {
             // sigpath::sourceManager.selectSource(sourceList[sourceId]);
         // }
-        SmGui::Text("MiriSDR");
-        if (running) { SmGui::EndDisabled(); }
+        SmGui::Text(SourceName);
+        // if (running) { SmGui::EndDisabled(); }
 
         sigpath::sourceManager.showSelectedMenu();
     }

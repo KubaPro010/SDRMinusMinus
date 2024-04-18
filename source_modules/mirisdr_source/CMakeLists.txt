@@ -10,11 +10,6 @@ if (MSVC)
     target_link_directories(mirisdr_source PRIVATE "C:/Program Files/PothosSDR/bin/")
 
     target_link_libraries(mirisdr_source PRIVATE mirisdr)
-elseif (ANDROID)
-    target_link_libraries(mirisdr_source PUBLIC
-        /sdr-kit/${ANDROID_ABI}/lib/libusb1.0.so
-        /sdr-kit/${ANDROID_ABI}/lib/libmirisdr.so
-    )
 else (MSVC)
     find_package(PkgConfig)
 

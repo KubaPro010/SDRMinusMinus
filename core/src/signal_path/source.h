@@ -21,11 +21,6 @@ public:
         void* ctx;
     };
 
-    enum TuningMode {
-        NORMAL,
-        PANADAPTER
-    };
-
     void registerSource(std::string name, SourceHandler* handler);
     void unregisterSource(std::string name);
     void selectSource(std::string name);
@@ -33,9 +28,6 @@ public:
     void start();
     void stop();
     void tune(double freq);
-    void setTuningOffset(double offset);
-    void setTuningMode(TuningMode mode);
-    void setPanadpterIF(double freq);
 
     std::vector<std::string> getSourceNames();
 
@@ -48,9 +40,6 @@ private:
     std::map<std::string, SourceHandler*> sources;
     std::string selectedName;
     SourceHandler* selectedHandler = NULL;
-    double tuneOffset;
     double currentFreq;
-    double ifFreq = 0.0;
-    TuningMode tuneMode = TuningMode::NORMAL;
     dsp::stream<dsp::complex_t> nullSource;
 };
