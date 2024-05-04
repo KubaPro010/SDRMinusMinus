@@ -16,17 +16,8 @@ namespace net {
 
     void init() {
         if (_init) { return; }
-#ifdef _WIN32
-        // Initialize WinSock2
-        WSADATA wsa;
-        if (WSAStartup(MAKEWORD(2, 2), &wsa)) {
-            throw std::runtime_error("Could not initialize WinSock2");
-            return;
-        }
-#else
         // Disable SIGPIPE to avoid closing when the remote host disconnects
         signal(SIGPIPE, SIG_IGN);
-#endif
         _init = true;
     }
 
@@ -38,22 +29,12 @@ namespace net {
     }
 
     void closeSocket(SockHandle_t sock) {
-#ifdef _WIN32
-        shutdown(sock, SD_BOTH);
-        closesocket(sock);
-#else
         shutdown(sock, SHUT_RDWR);
         close(sock);
-#endif
     }
 
     void setNonblocking(SockHandle_t sock) {
-#ifdef _WIN32
-        u_long enabled = 1;
-        ioctlsocket(sock, FIONBIO, &enabled);
-#else
         fcntl(sock, F_SETFL, O_NONBLOCK);
-#endif
     }
 
     // === Address functions ===
@@ -255,34 +236,6 @@ namespace net {
         init();
 
         std::map<std::string, InterfaceInfo> ifaces;
-#ifdef _WIN32
-        // Pre-allocate buffer
-        ULONG size = sizeof(IP_ADAPTER_ADDRESSES);
-        PIP_ADAPTER_ADDRESSES addresses = (PIP_ADAPTER_ADDRESSES)malloc(size);
-
-        // Reallocate to real size
-        if (GetAdaptersAddresses(AF_INET, 0, NULL, addresses, &size) == ERROR_BUFFER_OVERFLOW) {
-            addresses = (PIP_ADAPTER_ADDRESSES)realloc(addresses, size);
-            if (GetAdaptersAddresses(AF_INET, 0, NULL, addresses, &size)) {
-                throw std::exception("Could not list network interfaces");
-            }
-        }
-
-        // Save data
-        std::wstring_convert<std::codecvt_utf8<wchar_t>> utfConv;
-        for (auto iface = addresses; iface; iface = iface->Next) {
-            InterfaceInfo info;
-            auto ip = iface->FirstUnicastAddress;
-            if (!ip || ip->Address.lpSockaddr->sa_family != AF_INET) { continue; }
-            info.address = ntohl(*(uint32_t*)&ip->Address.lpSockaddr->sa_data[2]);
-            info.netmask = ~((1 << (32 - ip->OnLinkPrefixLength)) - 1);
-            info.broadcast = info.address | (~info.netmask);
-            ifaces[utfConv.to_bytes(iface->FriendlyName)] = info;
-        }
-        
-        // Free tables
-        free(addresses);
-#else
         // Get iface list
         struct ifaddrs* addresses = NULL;
         getifaddrs(&addresses);
@@ -300,8 +253,6 @@ namespace net {
 
         // Free iface list
         freeifaddrs(addresses);
-#endif
-
         return ifaces;
     }
 
@@ -313,7 +264,6 @@ namespace net {
         SockHandle_t s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         // TODO: Support non-blockign mode
 
-#ifndef _WIN32
         // Allow port reusing if the app was killed or crashed
         // and the socket is stuck in TIME_WAIT state.
         // This option has a different meaning on Windows,
@@ -324,7 +274,6 @@ namespace net {
             throw std::runtime_error("Could not configure socket");
             return NULL;
         }
-#endif
 
         // Bind socket to the port
         if (bind(s, (sockaddr*)&addr.addr, sizeof(sockaddr_in))) {

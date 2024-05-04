@@ -272,21 +272,11 @@ namespace server {
     }
 
     void drawMenu() {
-        // if (running) { SmGui::BeginDisabled(); }
-        // SmGui::FillWidth();
-        // SmGui::ForceSync();
-        // if (SmGui::Combo("##sdrpp_server_src_sel", &sourceId, sourceList.txt)) {
-            // sigpath::sourceManager.selectSource(sourceList[sourceId]);
-        // }
         SmGui::Text(SourceName);
-        // if (running) { SmGui::EndDisabled(); }
-
         sigpath::sourceManager.showSelectedMenu();
     }
 
     void renderUI(SmGui::DrawList* dl, std::string diffId, SmGui::DrawListElem diffValue) {
-        // If we're recording and there's an action, render once with the action and record without
-
         if (dl && !diffId.empty()) {
             SmGui::setDiff(diffId, diffValue);
             drawMenu();

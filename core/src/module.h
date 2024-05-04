@@ -4,28 +4,14 @@
 #include <json.hpp>
 #include <utils/event.h>
 
-#ifdef _WIN32
-#ifdef SDRPP_IS_CORE
-#define SDRPP_EXPORT extern "C" __declspec(dllexport)
-#else
-#define SDRPP_EXPORT extern "C" __declspec(dllimport)
-#endif
-#else
 #define SDRPP_EXPORT extern
-#endif
 
-#ifdef _WIN32
-#include <Windows.h>
-#define MOD_EXPORT           extern "C" __declspec(dllexport)
-#define SDRPP_MOD_EXTENTSION ".dll"
-#else
 #include <dlfcn.h>
 #define MOD_EXPORT extern "C"
 #ifdef __APPLE__
 #define SDRPP_MOD_EXTENTSION ".dylib"
 #else
 #define SDRPP_MOD_EXTENTSION ".so"
-#endif
 #endif
 
 class ModuleManager {
@@ -38,6 +24,7 @@ public:
         const int versionMinor;
         const int versionBuild;
         const int maxInstances;
+        const bool isSDRMMCompliant = false;
     };
 
     class Instance {
@@ -49,11 +36,7 @@ public:
     };
 
     struct Module_t {
-#ifdef _WIN32
-        HMODULE handle;
-#else
         void* handle;
-#endif
         ModuleManager::ModuleInfo_t* info;
         void (*init)();
         ModuleManager::Instance* (*createInstance)(std::string name);

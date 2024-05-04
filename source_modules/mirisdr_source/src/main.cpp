@@ -1,4 +1,4 @@
-//#define SDRPlay
+// #define SDRPlay
 
 #include <utils/flog.h>
 #include <module.h>
@@ -11,11 +11,12 @@
 
 #define CONCAT(a, b) ((std::string(a) + b).c_str())
 SDRPP_MOD_INFO{
-    /* Name:            */ "mirisdr_source",
-    /* Description:     */ "MiriSDR source module for SDR++",
-    /* Author:          */ "cropinghigh, kuba201",
-    /* Version:         */ 1, 3, 0,
-    /* Max instances    */ 1
+    /* Name:             */ "mirisdr_source",
+    /* Description:      */ "MiriSDR source module for SDR++",
+    /* Author:           */ "cropinghigh, kuba201",
+    /* Version:          */ 1, 3, 1,
+    /* Max instances     */ 1,
+    /* Is SDR-- Compliant*/ true
 };
 
 ConfigManager config;
@@ -52,42 +53,6 @@ const int sampleRates[] = {
     2000000,
     1540000,
 };
-
-const int bandwidths[] = {
-    0, //auto
-    15000000,
-    14000000,
-    13000000,
-    12000000,
-    11000000,
-    10000000,
-    9000000,
-    8000000,
-    7000000,
-    6000000,
-    5000000,
-    1536000,
-    600000,
-    300000,
-    200000,
-};
-
-const char* bandwidthsTxt = "Auto\0"
-                            "15 MHz\0"
-                            "14 MHz\0"
-                            "13 MHz\0"
-                            "12 MHz\0"
-                            "11 MHz\0"
-                            "10 MHz\0"
-                            "9 MHz\0"
-                            "8 MHz\0"
-                            "7 MHz\0"
-                            "6 MHz\0"
-                            "5 MHz\0"
-                            "1.536 MHz\0"
-                            "600 kHz\0"
-                            "300 kHz\0"
-                            "200 kHz\0";
 
 class MirisdrSourceModule : public ModuleManager::Instance {
 public:
@@ -221,10 +186,6 @@ private:
         flog::info("MirisdrSourceModule '{0}': Menu Deselect!", _this->name);
     }
 
-    int bandwidthIdToBw(int id) {
-        return bandwidths[id];
-    }
-
     static void start(void* ctx) {
         MirisdrSourceModule* _this = (MirisdrSourceModule*)ctx;
         if (_this->running) { return; }
@@ -344,10 +305,9 @@ private:
 
     static int get_auto_bw(void* ctx) {
         MirisdrSourceModule* _this = (MirisdrSourceModule*)ctx;
-        int bandwid = _this->bandwidthIdToBw(_this->bwId);
-        if(bandwid == 0) { //auto
-            int samplerate = sampleRates[_this->srId];
-            switch(samplerate) {
+        int bandwid = 0;
+        int samplerate = sampleRates[_this->srId];
+        switch(samplerate) {
             case 15000000:
                 bandwid = 15000000;
                 break;
@@ -385,7 +345,6 @@ private:
                 bandwid = 1536000;
                 break;
             //minimal sample rate is 1.54, setting the bandwidht lower than 1.536 is pointless
-            }
         }
         return bandwid;
     }
@@ -421,17 +380,6 @@ private:
         }
 
         if (_this->running) { SmGui::EndDisabled(); }
-
-        SmGui::LeftLabel("Bandwidth");
-        SmGui::FillWidth();
-        if (SmGui::Combo(CONCAT("##_mirisdr_bw_sel_", _this->name), &_this->bwId, bandwidthsTxt)) {
-            if (_this->running) {
-                mirisdr_set_bandwidth(_this->openDev, get_auto_bw(ctx));
-            }
-            config.acquire();
-            config.conf["devices"][_this->selectedSerial]["bandwidth"] = _this->bwId;
-            config.release(true);
-        }
 
         SmGui::LeftLabel("Gain");
         SmGui::FillWidth();

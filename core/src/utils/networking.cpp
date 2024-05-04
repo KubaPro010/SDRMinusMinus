@@ -36,12 +36,8 @@ namespace net {
         writeQueueCnd.notify_all();
 
         if (connectionOpen) {
-#ifdef _WIN32
-            closesocket(_sock);
-#else
             ::shutdown(_sock, SHUT_RDWR);
             ::close(_sock);
-#endif
         }
 
         // Wait for the theads to terminate

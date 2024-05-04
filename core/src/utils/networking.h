@@ -8,10 +8,6 @@
 #include <thread>
 #include <condition_variable>
 
-#ifdef _WIN32
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#else
 #include <unistd.h>
 #include <strings.h>
 #include <sys/types.h>
@@ -19,14 +15,9 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <signal.h>
-#endif
 
 namespace net {
-#ifdef _WIN32
-    typedef SOCKET Socket;
-#else
     typedef int Socket;
-#endif
 
     struct ConnReadEntry {
         int count;
@@ -119,8 +110,4 @@ namespace net {
     Conn connect(std::string host, uint16_t port);
     Listener listen(std::string host, uint16_t port);
     Conn openUDP(std::string host, uint16_t port, std::string remoteHost, uint16_t remotePort, bool bindSocket = true);
-
-#ifdef _WIN32
-    extern bool winsock_init;
-#endif
 }
