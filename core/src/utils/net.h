@@ -5,11 +5,6 @@
 #include <memory>
 #include <map>
 
-#ifdef _WIN32
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#include <iphlpapi.h>
-#else
 #include <unistd.h>
 #include <strings.h>
 #include <sys/types.h>
@@ -20,15 +15,9 @@
 #include <poll.h>
 #include <fcntl.h>
 #include <ifaddrs.h>
-#endif
 
 namespace net {
-#ifdef _WIN32
-    typedef SOCKET SockHandle_t;
-    typedef int socklen_t;
-#else
     typedef int SockHandle_t;
-#endif
     typedef uint32_t IP_t;
 
     class Socket;

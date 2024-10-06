@@ -4,10 +4,6 @@
 #include <string.h>
 #include <inttypes.h>
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
-
 #define FORMAT_BUF_SIZE 16
 #define ESCAPE_CHAR     '\\'
 
@@ -21,15 +17,6 @@ namespace flog {
         "ERROR"
     };
 
-#ifdef _WIN32
-#define COLOR_WHITE (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
-    const WORD TYPE_COLORS[_TYPE_COUNT] = {
-        FOREGROUND_GREEN | FOREGROUND_BLUE,
-        FOREGROUND_GREEN,
-        FOREGROUND_RED | FOREGROUND_GREEN,
-        FOREGROUND_RED
-    };
-#else
 #define COLOR_WHITE "\x1B[0m"
     const char* TYPE_COLORS[_TYPE_COUNT] = {
         "\x1B[36m",
@@ -37,7 +24,6 @@ namespace flog {
         "\x1B[33m",
         "\x1B[31m",
     };
-#endif
 
     void __log__(Type type, const char* fmt, const std::vector<std::string>& args) {
         // Reserve a buffer for the final output
@@ -132,29 +118,9 @@ namespace flog {
         // Write to output
         {
             std::lock_guard<std::mutex> lck(outMtx);
-#if defined(_WIN32)
-            // Get output handle and return if invalid
-            int wOutStream = (type == TYPE_ERROR) ? STD_ERROR_HANDLE  : STD_OUTPUT_HANDLE;
-            HANDLE conHndl = GetStdHandle(wOutStream);
-            if (!conHndl || conHndl == INVALID_HANDLE_VALUE) { return; }
-
-            // Print beginning of log line
-            SetConsoleTextAttribute(conHndl, COLOR_WHITE);
-            fprintf(outStream, "[%02d/%02d/%02d %02d:%02d:%02d.%03d] [", nowc->tm_mday, nowc->tm_mon + 1, nowc->tm_year + 1900, nowc->tm_hour, nowc->tm_min, nowc->tm_sec, 0);
-
-            // Switch color to the log color, print log type and 
-            SetConsoleTextAttribute(conHndl, TYPE_COLORS[type]);
-            fputs(TYPE_STR[type], outStream);
-            
-
-            // Switch back to default color and print rest of log string
-            SetConsoleTextAttribute(conHndl, COLOR_WHITE);
-            fprintf(outStream, "] %s\n", out.c_str());
-#else
             // Print format string
             fprintf(outStream, COLOR_WHITE "[%02d/%02d/%02d %02d:%02d:%02d.%03d] [%s%s" COLOR_WHITE "] %s\n",
                     nowc->tm_mday, nowc->tm_mon + 1, nowc->tm_year + 1900, nowc->tm_hour, nowc->tm_min, nowc->tm_sec, 0, TYPE_COLORS[type], TYPE_STR[type], out.c_str());
-#endif
         }
     }
 

@@ -3,11 +3,7 @@
 #include <codecvt>
 #include <stdexcept>
 
-#ifdef _WIN32
-#define WOULD_BLOCK (WSAGetLastError() == WSAEWOULDBLOCK)
-#else
 #define WOULD_BLOCK (errno == EWOULDBLOCK)
-#endif
 
 namespace net {
     bool _init = false;

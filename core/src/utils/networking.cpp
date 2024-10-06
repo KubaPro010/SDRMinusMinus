@@ -5,10 +5,6 @@
 
 namespace net {
 
-#ifdef _WIN32
-    extern bool winsock_init = false;
-#endif
-
     ConnClass::ConnClass(Socket sock, struct sockaddr_in raddr, bool udp) {
         _sock = sock;
         _udp = udp;
@@ -239,11 +235,7 @@ namespace net {
 
         // Accept socket
         _sock = ::accept(sock, NULL, NULL);
-#ifdef _WIN32
-        if (_sock < 0 || _sock == SOCKET_ERROR) {
-#else
         if (_sock < 0) {
-#endif
             listening = false;
             throw std::runtime_error("Could not bind socket");
             return NULL;
@@ -277,12 +269,8 @@ namespace net {
         acceptQueueCnd.notify_all();
 
         if (listening) {
-#ifdef _WIN32
-            closesocket(sock);
-#else
             ::shutdown(sock, SHUT_RDWR);
             ::close(sock);
-#endif
         }
 
         if (acceptWorkerThread.joinable()) { acceptWorkerThread.join(); }
@@ -327,20 +315,7 @@ namespace net {
     Conn connect(std::string host, uint16_t port) {
         Socket sock;
 
-#ifdef _WIN32
-        // Initialize WinSock2
-        if (!winsock_init) {
-            WSADATA wsa;
-            if (WSAStartup(MAKEWORD(2, 2), &wsa)) {
-                throw std::runtime_error("Could not initialize WinSock2");
-                return NULL;
-            }
-            winsock_init = true;
-        }
-        assert(winsock_init);
-#else
         signal(SIGPIPE, SIG_IGN);
-#endif
 
         // Create a socket
         sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -375,20 +350,7 @@ namespace net {
     Listener listen(std::string host, uint16_t port) {
         Socket listenSock;
 
-#ifdef _WIN32
-        // Initialize WinSock2
-        if (!winsock_init) {
-            WSADATA wsa;
-            if (WSAStartup(MAKEWORD(2, 2), &wsa)) {
-                throw std::runtime_error("Could not initialize WinSock2");
-                return NULL;
-            }
-            winsock_init = true;
-        }
-        assert(winsock_init);
-#else
         signal(SIGPIPE, SIG_IGN);
-#endif
 
         // Create a socket
         listenSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -397,7 +359,6 @@ namespace net {
             return NULL;
         }
 
-#ifndef _WIN32
         // Allow port reusing if the app was killed or crashed
         // and the socket is stuck in TIME_WAIT state.
         // This option has a different meaning on Windows,
@@ -407,7 +368,6 @@ namespace net {
             throw std::runtime_error("Could not configure socket");
             return NULL;
         }
-#endif
 
         // Get address from hostname/ip
         hostent* remoteHost = gethostbyname(host.c_str());
@@ -441,20 +401,7 @@ namespace net {
     Conn openUDP(std::string host, uint16_t port, std::string remoteHost, uint16_t remotePort, bool bindSocket) {
         Socket sock;
 
-#ifdef _WIN32
-        // Initialize WinSock2
-        if (!winsock_init) {
-            WSADATA wsa;
-            if (WSAStartup(MAKEWORD(2, 2), &wsa)) {
-                throw std::runtime_error("Could not initialize WinSock2");
-                return NULL;
-            }
-            winsock_init = true;
-        }
-        assert(winsock_init);
-#else
         signal(SIGPIPE, SIG_IGN);
-#endif
 
         // Create a socket
         sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);

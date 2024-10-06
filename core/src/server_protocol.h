@@ -12,8 +12,8 @@ namespace server {
         PACKET_TYPE_COMMAND_ACK,
         PACKET_TYPE_BASEBAND,
         PACKET_TYPE_BASEBAND_COMPRESSED,
-        PACKET_TYPE_VFO, //for what was this?
-        PACKET_TYPE_FFT,
+        PACKET_TYPE_VFO, // unused
+        PACKET_TYPE_FFT, //unused
         PACKET_TYPE_ERROR
     };
 

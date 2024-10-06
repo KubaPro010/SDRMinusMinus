@@ -79,11 +79,11 @@ int sdrpp_main(int argc, char* argv[]) {
 
     core::configManager.release(true);
 
-    if (serverMode) { return server::main(); }
+    if (serverMode) { 
+        return server::main();
+    }
     else {
         flog::error("This release is for server only, to get a GUI version, download SDR++");
         return 1;
     }
-    flog::info("Exiting successfully");
-    return 0;
 }

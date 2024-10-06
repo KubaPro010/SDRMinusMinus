@@ -45,7 +45,6 @@ namespace server {
 
     net::Listener listener;
 
-    // OptionList<std::string, std::string> sourceList;
     int sourceId = 0;
     bool running = false;
     bool compression = false;
@@ -109,12 +108,12 @@ namespace server {
         core::moduleManager.doPostInitAll();
 
         // Generate source list
-        // auto list = sigpath::sourceManager.getSourceNames();
+        // auto list = sourceManager.getSourceNames();
         // for (auto& name : list) {
         //     sourceList.define(name, name);
         // }
 
-        sigpath::sourceManager.selectSource(SourceName);
+        sourceManager.selectSource(SourceName);
 
         // TODO: Use command line option
         std::string host = (std::string)core::args["addr"];
@@ -158,7 +157,7 @@ namespace server {
         client->readAsync(sizeof(PacketHeader), rbuf, _packetHandler, NULL);
 
         // Perform settings reset
-        sigpath::sourceManager.stop();
+        sourceManager.stop();
         comp.setPCMType(dsp::compression::PCM_TYPE_I16);
         compression = false;
 
@@ -247,15 +246,15 @@ namespace server {
             }
         }
         else if (cmd == COMMAND_START) {
-            sigpath::sourceManager.start();
+            sourceManager.start();
             running = true;
         }
         else if (cmd == COMMAND_STOP) {
-            sigpath::sourceManager.stop();
+            sourceManager.stop();
             running = false;
         }
         else if (cmd == COMMAND_SET_FREQUENCY && len == 8) {
-            sigpath::sourceManager.tune(*(double*)data);
+            sourceManager.tune(*(double*)data);
             sendCommandAck(COMMAND_SET_FREQUENCY, 0);
         }
         else if (cmd == COMMAND_SET_SAMPLE_TYPE && len == 1) {
@@ -273,7 +272,7 @@ namespace server {
 
     void drawMenu() {
         SmGui::Text(SourceName);
-        sigpath::sourceManager.showSelectedMenu();
+        sourceManager.showSelectedMenu();
     }
 
     void renderUI(SmGui::DrawList* dl, std::string diffId, SmGui::DrawListElem diffValue) {
