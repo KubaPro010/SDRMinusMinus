@@ -232,16 +232,18 @@ namespace net {
         if (!listening) { return NULL; }
         std::lock_guard lck(acceptMtx);
         Socket _sock;
+        struct sockaddr_in clientAddr;
+        socklen_t addrLen = sizeof(clientAddr);
 
         // Accept socket
-        _sock = ::accept(sock, NULL, NULL);
+        _sock = ::accept(sock, (struct sockaddr *)&clientAddr, &addrLen);
         if (_sock < 0) {
             listening = false;
             throw std::runtime_error("Could not bind socket");
             return NULL;
         }
 
-        return Conn(new ConnClass(_sock));
+        return Conn(new ConnClass(_sock, clientAddr));
     }
 
     void ListenerClass::acceptAsync(void (*handler)(Conn conn, void* ctx), void* ctx) {
