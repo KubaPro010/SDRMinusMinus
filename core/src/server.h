@@ -1,5 +1,6 @@
 #pragma once
 #include <utils/networking.h>
+#include <arpa/inet.h> // for ip
 #include <dsp/stream.h>
 #include <dsp/types.h>
 #include <server_protocol.h>
