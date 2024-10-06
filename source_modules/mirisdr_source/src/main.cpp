@@ -79,12 +79,12 @@ public:
         config.release();
         selectBySerial(confSerial);
 
-        sigpath::sourceManager.registerSource("MiriSDR", &handler);
+        sourceManager.registerSource("MiriSDR", &handler);
     }
 
     ~MirisdrSourceModule() {
         stop(this);
-        sigpath::sourceManager.unregisterSource("MiriSDR");
+        sourceManager.unregisterSource("MiriSDR");
     }
 
     void postInit() {}
@@ -391,43 +391,6 @@ private:
             config.conf["devices"][_this->selectedSerial]["gain"] = (int)_this->gain;
             config.release(true);
         }
-
-        SmGui::LeftLabel("LNA Gain");
-        SmGui::FillWidth();
-        if (SmGui::SliderInt(CONCAT("##_mirisdr_lnagain_", _this->name), &_this->lnagain, 0, 1)) {
-            if (_this->running) {
-                if(mirisdr_set_lna_gain(_this->openDev, _this->lnagain)) {
-                    flog::error("Could not set Mirisdr LNA gain {0}", _this->selectedSerial);
-                }
-            }
-        }
-        SmGui::LeftLabel("Baseband Gain");
-        SmGui::FillWidth();
-        if (SmGui::SliderInt(CONCAT("##_mirisdr_bbgain_", _this->name), &_this->basebandgain, 0, 59)) {
-            if (_this->running) {
-                if(mirisdr_set_baseband_gain(_this->openDev, _this->basebandgain)) {
-                    flog::error("Could not set Mirisdr Baseband gain {0}", _this->selectedSerial);
-                }
-            }
-        }
-        SmGui::LeftLabel("Mixer Gain");
-        SmGui::FillWidth();
-        if (SmGui::SliderInt(CONCAT("##_mirisdr_mixergain_", _this->name), &_this->mixergain, 0, 1)) {
-            if (_this->running) {
-                if(mirisdr_set_mixer_gain(_this->openDev, _this->mixergain)) {
-                    flog::error("Could not set Mirisdr Mixer gain {0}", _this->selectedSerial);
-                }
-            }
-        }
-        SmGui::LeftLabel("Mixbuffer Gain");
-        SmGui::FillWidth();
-        if (SmGui::SliderInt(CONCAT("##_mirisdr_mixbgain_", _this->name), &_this->mixbuffergain, 0, 3)) {
-            if (_this->running) {
-                if(mirisdr_set_mixbuffer_gain(_this->openDev, _this->mixbuffergain)) {
-                    flog::error("Could not set Mirisdr Mixbuffer gain {0}", _this->selectedSerial);
-                }
-            }
-        }
     }
 
     static void callback(unsigned char *buf, uint32_t len, void *ctx) {
@@ -453,10 +416,6 @@ private:
     int srId = 0;
     int bwId = 16;
     int gain = 0;
-    int lnagain = 0;
-    int basebandgain = 0;
-    int mixergain = 0;
-    int mixbuffergain = 0;
 
     std::vector<std::string> devList;
     std::vector<int> devIdxList;
