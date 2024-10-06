@@ -59,7 +59,6 @@ public:
     MirisdrSourceModule(std::string name) {
         this->name = name;
 
-        // TODO Select the last samplerate option
         sampleRate = 1540000;
         srId = 14;
 

@@ -46,6 +46,7 @@ namespace net {
         void readAsync(int count, uint8_t* buf, void (*handler)(int count, uint8_t* buf, void* ctx), void* ctx, bool enforceSize = true);
         void writeAsync(int count, uint8_t* buf);
 
+        struct sockaddr_in remoteAddr;
     private:
         void readWorker();
         void writeWorker();
@@ -69,7 +70,6 @@ namespace net {
 
         Socket _sock;
         bool _udp;
-        struct sockaddr_in remoteAddr;
     };
 
     typedef std::unique_ptr<ConnClass> Conn;

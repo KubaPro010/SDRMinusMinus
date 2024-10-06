@@ -101,7 +101,6 @@ namespace SmGui {
     };
 
     // Rec/Play functions
-    // TODO: Maybe move verification to the load function instead of checking in drawFrame
     void setDiff(std::string id, SmGui::DrawListElem value);
     void startRecord(DrawList* dl);
     void stopRecord();

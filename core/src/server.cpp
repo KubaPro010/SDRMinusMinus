@@ -107,15 +107,8 @@ namespace server {
         // Do post-init
         core::moduleManager.doPostInitAll();
 
-        // Generate source list
-        // auto list = sourceManager.getSourceNames();
-        // for (auto& name : list) {
-        //     sourceList.define(name, name);
-        // }
-
         sourceManager.selectSource(SourceName);
 
-        // TODO: Use command line option
         std::string host = (std::string)core::args["addr"];
         int port = (int)core::args["port"];
         listener = net::listen(host, port);
@@ -132,7 +125,11 @@ namespace server {
     void _clientHandler(net::Conn conn, void* ctx) {
         // Reject if someone else is already connected
         if (client && client->isOpen()) {
-            flog::info("REJECTED Connection from {0}:{1}, another client is already connected.", "TODO", "TODO");
+            char client_ip[16];
+            inet_ntop(AF_INET, &conn->remoteAddr.sin_addr, client_ip, sizeof(client_ip));
+            char port_str[6];
+            snprintf(port_str, sizeof(port_str), "%u", ntohs(conn->remoteAddr.sin_port));
+            flog::info("REJECTED Connection from {0}:{1}, another client is already connected.", client_ip, port_str);
             
             // Issue a disconnect command to the client
             uint8_t buf[sizeof(PacketHeader) + sizeof(CommandHeader)];
@@ -152,7 +149,11 @@ namespace server {
             return;
         }
 
-        flog::info("Connection from {0}:{1}", "TODO", "TODO");
+        char client_ip[16];
+        inet_ntop(AF_INET, &conn->remoteAddr.sin_addr, client_ip, sizeof(client_ip));
+        char port_str[6];
+        snprintf(port_str, sizeof(port_str), "%u", ntohs(conn->remoteAddr.sin_port));
+        flog::info("Connection from {0}:{1}", client_ip, port_str);
         client = std::move(conn);
         client->readAsync(sizeof(PacketHeader), rbuf, _packetHandler, NULL);
 
@@ -169,11 +170,14 @@ namespace server {
     void _packetHandler(int count, uint8_t* buf, void* ctx) {
         PacketHeader* hdr = (PacketHeader*)buf;
 
-        // Read the rest of the data (TODO: CHECK SIZE OR SHIT WILL BE FUCKED + ADD TIMEOUT)
+        // Read the rest of the data
         int len = 0;
         int read = 0;
         int goal = hdr->size - sizeof(PacketHeader);
+        if (goal > SERVER_MAX_PACKET_SIZE - sizeof(PacketHeader)) { return; }
+        auto starttime = std::chrono::steady_clock::now();
         while (len < goal) {
+            if(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - starttime).count() > 150) { return; }
             read = client->read(goal - len, &buf[sizeof(PacketHeader) + len]);
             if (read < 0) { return; };
             len += read;

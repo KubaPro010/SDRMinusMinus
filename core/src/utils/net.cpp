@@ -258,7 +258,7 @@ namespace net {
 
         // Create socket
         SockHandle_t s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        // TODO: Support non-blockign mode
+        // TODO: Support non-blocking mode
 
         // Allow port reusing if the app was killed or crashed
         // and the socket is stuck in TIME_WAIT state.

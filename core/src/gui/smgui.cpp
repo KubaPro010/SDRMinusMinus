@@ -35,8 +35,6 @@ namespace SmGui {
         diffValue = value;
     }
 
-    // TODO: Add getDiff function for client
-
     void startRecord(DrawList* dl) {
         rdl = dl;
     }

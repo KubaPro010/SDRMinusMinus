@@ -19,7 +19,8 @@ namespace core {
 
     void setInputSampleRate(double samplerate) {
         // Forward this to the server
-        if (args["server"].b()) { server::setInputSampleRate(samplerate); return; }
+        server::setInputSampleRate(samplerate);
+        return;
     }
 };
 
@@ -33,8 +34,6 @@ int sdrpp_main(int argc, char* argv[]) {
         core::args.showHelp();
         return 0;
     }
-
-    bool serverMode = (bool)core::args["server"];
 
     std::string root = (std::string)core::args["root"];
     if (!std::filesystem::exists(root)) {
@@ -79,11 +78,5 @@ int sdrpp_main(int argc, char* argv[]) {
 
     core::configManager.release(true);
 
-    if (serverMode) { 
-        return server::main();
-    }
-    else {
-        flog::error("This release is for server only, to get a GUI version, download SDR++");
-        return 1;
-    }
+    return server::main();
 }

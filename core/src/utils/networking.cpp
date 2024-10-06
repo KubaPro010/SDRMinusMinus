@@ -344,7 +344,7 @@ namespace net {
             return NULL;
         }
 
-        return Conn(new ConnClass(sock));
+        return Conn(new ConnClass(sock, addr));
     }
 
     Listener listen(std::string host, uint16_t port) {

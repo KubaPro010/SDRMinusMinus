@@ -113,7 +113,7 @@ namespace flog {
         // Get time
         auto now = std::chrono::system_clock::now();
         auto nowt = std::chrono::system_clock::to_time_t(now);
-        auto nowc = std::localtime(&nowt); // TODO: This is not threadsafe
+        auto nowc = std::localtime(&nowt);
 
         // Write to output
         {
