@@ -54,7 +54,7 @@ namespace server {
         flog::info("=====| SERVER MODE |=====");
 
         // Init DSP
-        comp.init(&dummyInput, dsp::compression::PCM_TYPE_I16);
+        comp.init(&dummyInput, dsp::compression::PCM_TYPE_F32);
         hnd.init(&comp.out, _testServerHandler, NULL);
         rbuf = new uint8_t[SERVER_MAX_PACKET_SIZE];
         sbuf = new uint8_t[SERVER_MAX_PACKET_SIZE];
@@ -159,7 +159,7 @@ namespace server {
 
         // Perform settings reset
         sourceManager.stop();
-        comp.setPCMType(dsp::compression::PCM_TYPE_I16);
+        comp.setPCMType(dsp::compression::PCM_TYPE_F32);
         compression = false;
 
         sendSampleRate(sampleRate);
