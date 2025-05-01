@@ -1,10 +1,9 @@
 # SDRMinusMinus
-SDRPlusPlus but does not need to use glfw, currently it does do MiriSDR only and server mode, it is made to be in server mode, from what i can see: it decreased the file lenght of the core module: (with gui) from 2.783992M to (wait for it).....481.856 kilobytes, chatgpt says its 492.48% diffrence, in my server with `-j4` the app compiles in 47s
+SDRPlusPlus but does not need to use glfw, currently it does do MiriSDR only and server mode, it is made to be in server mode, from what i can see: it decreased the file lenght of the core module: (with gui) from 2.783992M to 481.856 kilobytes, chatgpt says its 492.48% diffrence, on my server with `-j4` the app compiles in 47s
 
 note that this release does not have a gui mode, you **need** to run it with `-s` to do anything
 # Requirements
-- a linux pc
-- ability to control it
+- a linux computer
 - internet
 - git
 - a mirisdr sdr, a sdrplay can work as a mirisdr
@@ -18,8 +17,6 @@ note that this release does not have a gui mode, you **need** to run it with `-s
 clone this: `git clone https://github.com/KubaPro010/SDRMinusMinus`<br>
 ### For SDRPlay Users
 libmirisdr-5 has a sdrplay flavour option, by default its gonna be the default flavour (shocking, right?), so clone flavour, however if something isnt working with the sdrplay then you can go to: `source_modules/mirisdr_source/src` and then open the main.cpp file, at the start you'll have ``//#define SDRPlay``, remove the prefix slashes so its ``#define SDRPlay`` and (re)compile, just from the `make -j`.... (with that too, to not be confused for some reason that confuses me always)
-#### tf does that change
-i ran the sdrplay flavour on my clone and the sampling rate or freqs seemed incorrect, signal on 95 mhz is suddenly on 96.75
 <br><br>
 anyways now just navigate to the dir create the go to the build dir initialize cmake and make, make install
 ```
