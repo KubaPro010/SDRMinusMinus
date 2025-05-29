@@ -5,12 +5,12 @@
 #include "command_args.h"
 
 namespace core {
-    SDRPP_EXPORT ConfigManager configManager;
-    SDRPP_EXPORT ModuleManager moduleManager;
-    SDRPP_EXPORT ModuleComManager modComManager;
-    SDRPP_EXPORT CommandArgsParser args;
+    SDRMM_EXPORT ConfigManager configManager;
+    SDRMM_EXPORT ModuleManager moduleManager;
+    SDRMM_EXPORT ModuleComManager modComManager;
+    SDRMM_EXPORT CommandArgsParser args;
 
     void setInputSampleRate(double samplerate);
 };
 
-int sdrpp_main(int argc, char* argv[]);
+int sdrmm_main(int argc, char* argv[]);

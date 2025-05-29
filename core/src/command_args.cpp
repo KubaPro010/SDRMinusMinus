@@ -2,7 +2,7 @@
 #include <filesystem>
 
 void CommandArgsParser::defineAll() {
-        std::string root = (std::string)getenv("HOME") + "/.config/sdrpp";
+        std::string root = (std::string)getenv("HOME") + "/.config/sdrmm";
         define('a', "addr", "Server mode address", "0.0.0.0");
         define('h', "help", "Show help");
         define('p', "port", "Server mode port", 5259);
@@ -14,10 +14,7 @@ int CommandArgsParser::parse(int argc, char* argv[]) {
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
         
-        // Check for long and short name arguments
-        if (!arg.rfind("--", 0)) {
-            arg = arg.substr(2);
-        }
+        if (!arg.rfind("--", 0)) arg = arg.substr(2);
         else if (!arg.rfind("-", 0)) {
             if (aliases.find(arg[1]) == aliases.end()) {
                 printf("Unknown argument\n");
@@ -61,12 +58,8 @@ int CommandArgsParser::parse(int argc, char* argv[]) {
             // Enforce lower case
             for (int i = 0; i < arg.size(); i++) { arg[i] = std::tolower(arg[i]); }
 
-            if (arg == "true" || arg == "on" || arg == "1") {
-                carg.bval = true;
-            }
-            else if (arg == "false" || arg == "off" || arg == "0") {
-                carg.bval = true;
-            }
+            if (arg == "true" || arg == "on" || arg == "1") carg.bval = true;
+            else if (arg == "false" || arg == "off" || arg == "0") carg.bval = true;
             else {
                 printf("Invalid argument, expected bool (true, false, on, off, 1, 0)\n");
                 showHelp();
@@ -93,9 +86,7 @@ int CommandArgsParser::parse(int argc, char* argv[]) {
                 return -1;
             }
         }
-        else if (carg.type == CLI_ARG_TYPE_STRING) {
-            carg.sval = arg;
-        }
+        else if (carg.type == CLI_ARG_TYPE_STRING) carg.sval = arg;
     }
 
     return 0;

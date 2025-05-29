@@ -18,14 +18,12 @@ namespace core {
     CommandArgsParser args;
 
     void setInputSampleRate(double samplerate) {
-        // Forward this to the server
         server::setInputSampleRate(samplerate);
-        return;
     }
 };
 
 // main
-int sdrpp_main(int argc, char* argv[]) {
+int sdrmm_main(int argc, char* argv[]) {
     flog::info("SDR-- v" VERSION_STR);
     core::args.defineAll();
     if (core::args.parse(argc, argv) < 0) { return -1; } 
@@ -52,7 +50,7 @@ int sdrpp_main(int argc, char* argv[]) {
 
     // ======== DEFAULT CONFIG ========
     json defConfig;
-    defConfig["modulesDirectory"] = INSTALL_PREFIX "/lib/sdrpp/plugins";
+    defConfig["modulesDirectory"] = INSTALL_PREFIX "/lib/sdrmm/plugins";
     flog::info("Loading config");
     core::configManager.setPath(root + "/config.json");
     core::configManager.load(defConfig);

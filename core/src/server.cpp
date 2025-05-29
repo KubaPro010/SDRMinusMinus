@@ -89,19 +89,15 @@ namespace server {
             for (const auto& file : std::filesystem::directory_iterator(modulesDir)) {
                 std::string path = file.path().generic_string();
                 std::string fn = file.path().filename().string();
-                if (file.path().extension().generic_string() != SDRPP_MOD_EXTENTSION) {
-                    continue;
-                }
-                if (!file.is_regular_file()) { continue; }
-                if (fn.find("source") == std::string::npos) { continue; }
+                if (file.path().extension().generic_string() != SDRMM_MOD_EXTENTSION) continue;
+                if (!file.is_regular_file()) continue;
+                if (fn.find("source") == std::string::npos) continue;
 
                 flog::info("Loading {0}", path);
                 core::moduleManager.loadModule(path);
             }
         }
-        else {
-            flog::warn("Module directory {0} does not exist, not loading modules from directory", modulesDir);
-        }
+        else flog::warn("Module directory {0} does not exist, not loading modules from directory", modulesDir);
 	    core::moduleManager.createInstance(LoadedModuleName, ModuleName);
 
         // Do post-init
@@ -115,9 +111,7 @@ namespace server {
         listener->acceptAsync(_clientHandler, NULL);
 
         flog::info("Ready, listening on {0}:{1}", host, port);
-        while(1) { 
-            std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
-        }
+        while(1) std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
 
         return 0;
     }
@@ -188,9 +182,7 @@ namespace server {
             CommandHeader* chdr = (CommandHeader*)&buf[sizeof(PacketHeader)];
             commandHandler((Command)chdr->cmd, &buf[sizeof(PacketHeader) + sizeof(CommandHeader)], hdr->size - sizeof(PacketHeader) - sizeof(CommandHeader));
         }
-        else {
-            sendError(ERROR_INVALID_PACKET);
-        }
+        else sendError(ERROR_INVALID_PACKET);
 
         // Start another async read
         client->readAsync(sizeof(PacketHeader), rbuf, _packetHandler, NULL);
@@ -217,9 +209,7 @@ namespace server {
     }
 
     void commandHandler(Command cmd, uint8_t* data, int len) {
-        if (cmd == COMMAND_GET_UI) {
-            sendUI(COMMAND_GET_UI, "", dummyElem);
-        }
+        if (cmd == COMMAND_GET_UI) sendUI(COMMAND_GET_UI, "", dummyElem);
         else if (cmd == COMMAND_UI_ACTION && len >= 3) {
             // Check if sending back data is needed
             int i = 0;
@@ -242,12 +232,8 @@ namespace server {
             len -= count;
 
             // Render and send back
-            if (sendback) {
-                sendUI(COMMAND_UI_ACTION, diffId.str, diffValue);
-            }
-            else {
-                renderUI(NULL, diffId.str, diffValue);
-            }
+            if (sendback) sendUI(COMMAND_UI_ACTION, diffId.str, diffValue);
+            else renderUI(NULL, diffId.str, diffValue);
         }
         else if (cmd == COMMAND_START) {
             sourceManager.start();
@@ -265,9 +251,7 @@ namespace server {
             dsp::compression::PCMType type = (dsp::compression::PCMType)*(uint8_t*)data;
             comp.setPCMType(type);
         }
-        else if (cmd == COMMAND_SET_COMPRESSION && len == 1) {
-            compression = *(uint8_t*)data;
-        }
+        else if (cmd == COMMAND_SET_COMPRESSION && len == 1) compression = *(uint8_t*)data;
         else {
             flog::error("Invalid Command: {0} (len = {1})", (int)cmd, len);
             sendError(ERROR_INVALID_COMMAND);

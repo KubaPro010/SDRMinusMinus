@@ -16,7 +16,7 @@ void ConfigManager::setPath(std::string file) {
 }
 
 void ConfigManager::load(json def, bool lock) {
-    if (lock) { mtx.lock(); }
+    if (lock) mtx.lock();
     if (path == "") {
         flog::error("Config manager tried to load file with no path specified");
         return;
@@ -41,26 +41,26 @@ void ConfigManager::load(json def, bool lock) {
         conf = def;
         save(false);
     }
-    if (lock) { mtx.unlock(); }
+    if (lock) mtx.unlock();
 }
 
 void ConfigManager::save(bool lock) {
-    if (lock) { mtx.lock(); }
+    if (lock) mtx.lock();
     std::ofstream file(path.c_str());
     file << conf.dump(4);
     file.close();
-    if (lock) { mtx.unlock(); }
+    if (lock) mtx.unlock();
 }
 
 void ConfigManager::enableAutoSave() {
-    if (autoSaveEnabled) { return; }
+    if (autoSaveEnabled) return;
     autoSaveEnabled = true;
     termFlag = false;
     autoSaveThread = std::thread(&ConfigManager::autoSaveWorker, this);
 }
 
 void ConfigManager::disableAutoSave() {
-    if (!autoSaveEnabled) { return; }
+    if (!autoSaveEnabled) return;
     {
         std::lock_guard<std::mutex> lock(termMtx);
         autoSaveEnabled = false;

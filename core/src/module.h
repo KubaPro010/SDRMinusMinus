@@ -4,14 +4,14 @@
 #include <utils/json.hpp>
 #include <utils/event.h>
 
-#define SDRPP_EXPORT extern
+#define SDRMM_EXPORT extern
 
 #include <dlfcn.h>
 #define MOD_EXPORT extern "C"
 #ifdef __APPLE__
-#define SDRPP_MOD_EXTENTSION ".dylib"
+#define SDRMM_MOD_EXTENTSION ".dylib"
 #else
-#define SDRPP_MOD_EXTENTSION ".so"
+#define SDRMM_MOD_EXTENTSION ".so"
 #endif
 
 class ModuleManager {
@@ -83,4 +83,4 @@ public:
     std::map<std::string, ModuleManager::Instance_t> instances;
 };
 
-#define SDRPP_MOD_INFO MOD_EXPORT const ModuleManager::ModuleInfo_t _INFO_
+#define SDRMM_MOD_INFO MOD_EXPORT const ModuleManager::ModuleInfo_t _INFO_

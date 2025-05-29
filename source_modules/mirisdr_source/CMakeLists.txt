@@ -3,7 +3,7 @@ project(mirisdr_source)
 
 file(GLOB SRC "src/*.cpp")
 
-include(${SDRPP_MODULE_CMAKE})
+include(${SDRMM_MODULE_CMAKE})
 
 find_package(PkgConfig)
 

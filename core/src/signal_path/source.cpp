@@ -53,30 +53,22 @@ void SourceManager::selectSource(std::string name) {
 }
 
 void SourceManager::showSelectedMenu() {
-    if (selectedHandler == NULL) {
-        return;
-    }
+    if (selectedHandler == NULL) return;
     selectedHandler->menuHandler(selectedHandler->ctx);
 }
 
 void SourceManager::start() {
-    if (selectedHandler == NULL) {
-        return;
-    }
+    if (selectedHandler == NULL) return;
     selectedHandler->startHandler(selectedHandler->ctx);
 }
 
 void SourceManager::stop() {
-    if (selectedHandler == NULL) {
-        return;
-    }
+    if (selectedHandler == NULL) return;
     selectedHandler->stopHandler(selectedHandler->ctx);
 }
 
 void SourceManager::tune(double freq) {
-    if (selectedHandler == NULL) {
-        return;
-    }
+    if (selectedHandler == NULL) return;
     selectedHandler->tuneHandler(freq, selectedHandler->ctx);
     onRetune.emit(freq);
     currentFreq = freq;

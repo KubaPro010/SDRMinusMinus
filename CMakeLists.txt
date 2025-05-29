@@ -1,28 +1,28 @@
 cmake_minimum_required(VERSION 3.13)
-project(sdrpp)
+project(sdrmm)
 option(OPT_OVERRIDE_STD_FILESYSTEM "Use a local version of std::filesystem on systems that don't have it yet" OFF)
 
-set(SDRPP_MODULE_CMAKE "${CMAKE_SOURCE_DIR}/sdrpp_module.cmake")
+set(SDRMM_MODULE_CMAKE "${CMAKE_SOURCE_DIR}/sdrmm_module.cmake")
 
-set(SDRPP_CORE_ROOT "${CMAKE_SOURCE_DIR}/core/src/")
+set(SDRMM_CORE_ROOT "${CMAKE_SOURCE_DIR}/core/src/")
 
 # Compiler flags
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
     # Debug Flags
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(SDRPP_COMPILER_FLAGS -g -Og -std=c++17 -Wno-unused-command-line-argument -undefined dynamic_lookup)
+        set(SDRMM_COMPILER_FLAGS -g -Og -std=c++17 -Wno-unused-command-line-argument -undefined dynamic_lookup)
     else ()
-        set(SDRPP_COMPILER_FLAGS -g -Og -std=c++17)
+        set(SDRMM_COMPILER_FLAGS -g -Og -std=c++17)
     endif ()
 else()
     # Normal Flags
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(SDRPP_COMPILER_FLAGS -O3 -std=c++17 -Wno-unused-command-line-argument -undefined dynamic_lookup)
+        set(SDRMM_COMPILER_FLAGS -O3 -std=c++17 -Wno-unused-command-line-argument -undefined dynamic_lookup)
     else ()
-        set(SDRPP_COMPILER_FLAGS -O3 -std=c++17)
+        set(SDRMM_COMPILER_FLAGS -O3 -std=c++17)
     endif ()
 endif()
-set(SDRPP_MODULE_COMPILER_FLAGS ${SDRPP_COMPILER_FLAGS})
+set(SDRMM_MODULE_COMPILER_FLAGS ${SDRMM_COMPILER_FLAGS})
 
 # Set a default install prefix
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -31,20 +31,20 @@ endif()
 
 # Core of SDR++
 add_subdirectory("core")
-add_executable(sdrpp "src/main.cpp")
+add_executable(sdrmm "src/main.cpp")
 add_subdirectory("source_modules/mirisdr_source")
-target_link_libraries(sdrpp PRIVATE sdrpp_core)
+target_link_libraries(sdrmm PRIVATE sdrmm_core)
 
 # Compiler arguments
-target_compile_options(sdrpp PRIVATE ${SDRPP_COMPILER_FLAGS})
+target_compile_options(sdrmm PRIVATE ${SDRMM_COMPILER_FLAGS})
 
-add_custom_target(do_always ALL cp \"$<TARGET_FILE_DIR:sdrpp_core>/libsdrpp_core.so\" \"$<TARGET_FILE_DIR:sdrpp>\")
+add_custom_target(do_always ALL cp \"$<TARGET_FILE_DIR:sdrmm_core>/libsdrmm_core.so\" \"$<TARGET_FILE_DIR:sdrmm>\")
 
 # Create module cmake file
-configure_file(${CMAKE_SOURCE_DIR}/sdrpp_module.cmake ${CMAKE_CURRENT_BINARY_DIR}/sdrpp_module.cmake @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/sdrmm_module.cmake ${CMAKE_CURRENT_BINARY_DIR}/sdrmm_module.cmake @ONLY)
 
 # Install directives
-install(TARGETS sdrpp DESTINATION bin)
+install(TARGETS sdrmm DESTINATION bin)
 
 # Create uninstall target
 configure_file(${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake @ONLY)

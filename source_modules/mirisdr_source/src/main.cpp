@@ -11,11 +11,11 @@
 // #define FLAVOR MIRISDR_HW_SDRPLAY
 
 #define CONCAT(a, b) ((std::string(a) + b).c_str())
-SDRPP_MOD_INFO{
+SDRMM_MOD_INFO{
     /* Name:             */ "mirisdr_source",
     /* Description:      */ "MiriSDR source module for SDR++",
     /* Author:           */ "cropinghigh, kuba201",
-    /* Version:          */ 1, 3, 1,
+    /* Version:          */ 1, 3, 2,
     /* Max instances     */ 1,
     /* Is SDR-- Compliant*/ true
 };
