@@ -57,12 +57,8 @@ namespace flog {
             // State machine
             if (!inFormat && c != '{') {
                 // Write to formatted output if not escape character
-                if (c == ESCAPE_CHAR) {
-                    escaped = true;
-                }
-                else {
-                    out += c;
-                }
+                if (c == ESCAPE_CHAR) escaped = true;
+                else out += c;
             }
             else if (!inFormat) {
                 // Start format mode
@@ -75,12 +71,8 @@ namespace flog {
                 // Insert string value or error
                 if (!formatLen) {
                     // Use format counter as ID if available or print wrong format string
-                    if (formatCounter < argCount) {
-                        out += args[formatCounter++];
-                    }
-                    else {
-                        out += "{}";
-                    }
+                    if (formatCounter < argCount) out += args[formatCounter++];
+                    else out += "{}";
                 }
                 else {
                     // Parse number
@@ -88,9 +80,7 @@ namespace flog {
                     formatCounter = std::atoi(formatBuf);
 
                     // Use ID if available or print wrong format string
-                    if (formatCounter < argCount) {
-                        out += args[formatCounter];
-                    }
+                    if (formatCounter < argCount) out += args[formatCounter];
                     else {
                         out += '{';
                         out += formatBuf;
@@ -119,8 +109,7 @@ namespace flog {
         {
             std::lock_guard<std::mutex> lck(outMtx);
             // Print format string
-            fprintf(outStream, COLOR_WHITE "[%02d/%02d/%02d %02d:%02d:%02d.%03d] [%s%s" COLOR_WHITE "] %s\n",
-                    nowc->tm_mday, nowc->tm_mon + 1, nowc->tm_year + 1900, nowc->tm_hour, nowc->tm_min, nowc->tm_sec, 0, TYPE_COLORS[type], TYPE_STR[type], out.c_str());
+            fprintf(outStream, COLOR_WHITE "[%02d/%02d/%02d %02d:%02d:%02d.%03d] [%s%s" COLOR_WHITE "] %s\n", nowc->tm_mday, nowc->tm_mon + 1, nowc->tm_year + 1900, nowc->tm_hour, nowc->tm_min, nowc->tm_sec, 0, TYPE_COLORS[type], TYPE_STR[type], out.c_str());
         }
     }
 

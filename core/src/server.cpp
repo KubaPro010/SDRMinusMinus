@@ -147,6 +147,7 @@ namespace server {
         inet_ntop(AF_INET, &conn->remoteAddr.sin_addr, client_ip, sizeof(client_ip));
         char port_str[6];
         snprintf(port_str, sizeof(port_str), "%u", ntohs(conn->remoteAddr.sin_port));
+        
         flog::info("Connection from {0}:{1}", client_ip, port_str);
         client = std::move(conn);
         client->readAsync(sizeof(PacketHeader), rbuf, _packetHandler, NULL);

@@ -15,9 +15,7 @@ namespace dsp::routing {
             std::lock_guard<std::recursive_mutex> lck(base_type::ctrlMtx);
             
             // Check that the stream isn't already bound
-            if (std::find(streams.begin(), streams.end(), stream) != streams.end()) {
-                throw std::runtime_error("[Splitter] Tried to bind stream to that is already bound");
-            }
+            if (std::find(streams.begin(), streams.end(), stream) != streams.end()) throw std::runtime_error("[Splitter] Tried to bind stream to that is already bound");
 
             // Add to the list
             base_type::tempStop();
@@ -32,9 +30,7 @@ namespace dsp::routing {
             
             // Check that the stream is bound
             auto sit = std::find(streams.begin(), streams.end(), stream);
-            if (sit == streams.end()) {
-                throw std::runtime_error("[Splitter] Tried to unbind stream to that isn't bound");
-            }
+            if (sit == streams.end()) throw std::runtime_error("[Splitter] Tried to unbind stream to that isn't bound");
 
             // Add to the list
             base_type::tempStop();
@@ -45,7 +41,7 @@ namespace dsp::routing {
 
         int run() {
             int count = base_type::_in->read();
-            if (count < 0) { return -1; }
+            if (count < 0) return -1;
 
             for (const auto& stream : streams) {
                 memcpy(stream->writeBuf, base_type::_in->readBuf, count * sizeof(T));
@@ -62,6 +58,5 @@ namespace dsp::routing {
 
     protected:
         std::vector<stream<T>*> streams;
-
     };
 }

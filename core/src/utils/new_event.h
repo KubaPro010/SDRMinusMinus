@@ -27,17 +27,13 @@ public:
 
     void unbind(HandlerID id) {
         std::lock_guard<std::mutex> lck(mtx);
-        if (handlers.find(id) == handlers.end()) {
-            throw std::runtime_error("Could not unbind handler, unknown ID");
-        }
+        if (handlers.find(id) == handlers.end()) throw std::runtime_error("Could not unbind handler, unknown ID");
         handlers.erase(id);
     }
 
     void operator()(Args... args) {
         std::lock_guard<std::mutex> lck(mtx);
-        for (const auto& [desc, handler] : handlers) {
-            handler(args...);
-        }
+        for (const auto& [desc, handler] : handlers) handler(args...);
     }
 
 private:

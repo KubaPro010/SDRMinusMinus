@@ -46,7 +46,7 @@ namespace dsp {
                 swapCV.wait(lck, [this] { return (canSwap || writerStop); });
 
                 // If writer was stopped, abandon operation
-                if (writerStop) { return false; }
+                if (writerStop) return false;
 
                 // Swap buffers
                 dataSize = size;
@@ -115,8 +115,8 @@ namespace dsp {
         }
 
         void free() {
-            if (writeBuf) { buffer::free(writeBuf); }
-            if (readBuf) { buffer::free(readBuf); }
+            if (writeBuf) buffer::free(writeBuf);
+            if (readBuf) buffer::free(readBuf);
             writeBuf = NULL;
             readBuf = NULL;
         }

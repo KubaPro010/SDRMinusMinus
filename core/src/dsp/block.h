@@ -26,9 +26,7 @@ namespace dsp {
         virtual void start() {
             assert(_block_init);
             std::lock_guard<std::recursive_mutex> lck(ctrlMtx);
-            if (running) {
-                return;
-            }
+            if (running) return;
             running = true;
             doStart();
         }
@@ -36,9 +34,7 @@ namespace dsp {
         virtual void stop() {
             assert(_block_init);
             std::lock_guard<std::recursive_mutex> lck(ctrlMtx);
-            if (!running) {
-                return;
-            }
+            if (!running) return;
             doStop();
             running = false;
         }
@@ -73,24 +69,14 @@ namespace dsp {
         }
 
         virtual void doStop() {
-            for (auto& in : inputs) {
-                in->stopReader();
-            }
-            for (auto& out : outputs) {
-                out->stopWriter();
-            }
+            for (auto& in : inputs) in->stopReader();
+            for (auto& out : outputs) out->stopWriter();
 
             // TODO: Make sure this isn't needed, I don't know why it stops
-            if (workerThread.joinable()) {
-                workerThread.join();
-            }
+            if (workerThread.joinable()) workerThread.join();
 
-            for (auto& in : inputs) {
-                in->clearReadStop();
-            }
-            for (auto& out : outputs) {
-                out->clearWriteStop();
-            }
+            for (auto& in : inputs) in->clearReadStop();
+            for (auto& out : outputs) out->clearWriteStop();
         }
     
         void acquire() {

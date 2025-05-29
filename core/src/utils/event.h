@@ -21,9 +21,7 @@ public:
     ~Event() {}
 
     void emit(T value) {
-        for (auto const& handler : handlers) {
-            handler->handler(value, handler->ctx);
-        }
+        for (auto const& handler : handlers) handler->handler(value, handler->ctx);
     }
 
     void bindHandler(EventHandler<T>* handler) {

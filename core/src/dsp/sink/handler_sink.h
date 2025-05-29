@@ -18,7 +18,7 @@ namespace dsp::sink {
 
         int run() {
             int count = base_type::_in->read();
-            if (count < 0) { return -1; }
+            if (count < 0) return -1;
 
             _handler(base_type::_in->readBuf, count, _ctx);
 
@@ -29,6 +29,5 @@ namespace dsp::sink {
     protected:
         void (*_handler)(T* data, int count, void* ctx);
         void* _ctx;
-
     };
 }

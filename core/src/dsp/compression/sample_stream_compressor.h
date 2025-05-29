@@ -72,7 +72,7 @@ namespace dsp::compression {
             // Swap if some data was generated
             base_type::_in->flush();
             if (outCount) {
-                if (!base_type::out.swap(outCount)) { return -1; }
+                if (!base_type::out.swap(outCount)) return -1;
             }
             return outCount;
         }

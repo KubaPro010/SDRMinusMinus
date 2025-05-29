@@ -94,11 +94,7 @@ int CommandArgsParser::parse(int argc, char* argv[]) {
 
 void CommandArgsParser::showHelp() {
     for (auto const& [ln, arg] : args) {
-        if (arg.alias) {
-            printf("-%c --%s\t\t%s\n", arg.alias, ln.c_str(), arg.description.c_str());
-        }
-        else {
-            printf("   --%s\t\t%s\n", ln.c_str(), arg.description.c_str());
-        }
+        if (arg.alias) printf("-%c --%s\t\t%s\n", arg.alias, ln.c_str(), arg.description.c_str());
+        else printf("   --%s\t\t%s\n", ln.c_str(), arg.description.c_str());
     }
 }

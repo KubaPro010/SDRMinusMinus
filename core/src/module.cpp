@@ -57,9 +57,7 @@ ModuleManager::Module_t ModuleManager::loadModule(std::string path) {
     }
     if(!mod.info->isSDRMMCompliant) flog::warn("Module may not work with SDR--");
     for (auto const& [name, _mod] : modules) {
-        if (mod.handle == _mod.handle) {
-            return _mod;
-        }
+        if (mod.handle == _mod.handle) return _mod;
     }
     mod.init();
     modules[mod.info->name] = mod;
