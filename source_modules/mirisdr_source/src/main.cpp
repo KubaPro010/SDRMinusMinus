@@ -1,5 +1,3 @@
-// #define SDRPlay
-
 #include <utils/flog.h>
 #include <module.h>
 #include <signal_path/signal_path.h>
@@ -8,6 +6,9 @@
 #include <gui/smgui.h>
 #include <thread>
 #include <mirisdr.h>
+
+#define FLAVOR MIRISDR_HW_DEFAULT
+// #define FLAVOR MIRISDR_HW_SDRPLAY
 
 #define CONCAT(a, b) ((std::string(a) + b).c_str())
 SDRPP_MOD_INFO{
@@ -165,6 +166,11 @@ public:
         if (config.conf["devices"][serial].contains("gain")) {
             gain = config.conf["devices"][serial]["gain"];
         }
+        if (config.conf["devices"][serial].contains("offsetTune")) {
+            offsetTune = config.conf["devices"][serial]["offsetTune"];
+        } else {
+            offsetTune = false;
+        }
         if (config.conf["devices"][serial].contains("bandwidth")) {
             bwId = config.conf["devices"][serial]["bandwidth"];
             bwId = std::clamp<int>(bwId, 0, 7);
@@ -215,17 +221,10 @@ private:
             flog::error("Could not open Mirisdr {0} id {1} cnt {2}", _this->selectedSerial, id, cnt);
             return;
         }
-        #ifndef SDRPlay
-        if(mirisdr_set_hw_flavour(_this->openDev, MIRISDR_HW_DEFAULT)) {
+        if(mirisdr_set_hw_flavour(_this->openDev, FLAVOR)) {
             flog::error("Could not set Mirisdr hw flavour {0}", _this->selectedSerial);
             return;
         }
-        #else
-        if(mirisdr_set_hw_flavour(_this->openDev, MIRISDR_HW_SDRPLAY)) {
-            flog::error("Could not set Mirisdr hw flavour {0}", _this->selectedSerial);
-            return;
-        }
-        #endif
         if(mirisdr_set_sample_format(_this->openDev, "AUTO")) {
             flog::error("Could not set Mirisdr sample format {0}", _this->selectedSerial);
             return;
@@ -256,6 +255,10 @@ private:
         }
         if(mirisdr_set_tuner_gain(_this->openDev, _this->gain)) {
             flog::error("Could not set Mirisdr gain {0}", _this->selectedSerial);
+            return;
+        }
+        if(mirisdr_set_offset_tuning(_this->openDev, _this->offsetTune ? 1 : 0)) {
+            flog::error("Could not set Mirisdr offset tuning {0}", _this->selectedSerial);
             return;
         }
 
@@ -388,6 +391,15 @@ private:
             }
             config.acquire();
             config.conf["devices"][_this->selectedSerial]["gain"] = (int)_this->gain;
+            config.release(true);
+        }
+
+        if (SmGui::Checkbox(CONCAT("Offset Tuning##_mirisdr_offset_", _this->name), &_this->offsetTune)) {
+            if (_this->running) {
+                mirisdr_set_offset_tuning(_this->openDev, _this->offsetTune ? 1 : 0);
+            }
+            config.acquire();
+            config.conf["devices"][_this->selectedSerial]["offsetTune"] = _this->offsetTune;
             config.release(true);
         }
     }
