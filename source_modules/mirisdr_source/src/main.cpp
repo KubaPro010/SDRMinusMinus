@@ -355,8 +355,6 @@ private:
         MirisdrSourceModule* _this = (MirisdrSourceModule*)ctx;
 
         if (_this->running) { SmGui::BeginDisabled(); }
-        SmGui::FillWidth();
-        SmGui::ForceSync();
         if (SmGui::Combo(CONCAT("##_mirisdr_dev_sel_", _this->name), &_this->devId, _this->devListTxt.c_str())) {
             _this->selectBySerial(_this->devList[_this->devId]);
             config.acquire();
@@ -373,6 +371,8 @@ private:
             core::setInputSampleRate(_this->sampleRate);
         }
 
+        SmGui::FillWidth();
+        SmGui::ForceSync();
         if (SmGui::Combo(CONCAT("##_mirisdr_sr_sel_", _this->name), &_this->srId, sampleRatesTxt)) {
             _this->sampleRate = sampleRates[_this->srId];
             core::setInputSampleRate(_this->sampleRate);
