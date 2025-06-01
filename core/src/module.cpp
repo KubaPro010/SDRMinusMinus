@@ -1,6 +1,6 @@
-#include <module.h>
+#include "module.h"
 #include <filesystem>
-#include <utils/flog.h>
+#include "utils/flog.h"
 
 ModuleManager::Module_t ModuleManager::loadModule(std::string path) {
     Module_t mod;

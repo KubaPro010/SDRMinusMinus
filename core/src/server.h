@@ -1,9 +1,9 @@
 #pragma once
-#include <utils/networking.h>
+#include "utils/networking.h"
 #include <arpa/inet.h>
-#include <dsp/stream.h>
-#include <dsp/types.h>
-#include <server_protocol.h>
+#include "dsp/stream.h"
+#include "dsp/types.h"
+#include "server_protocol.h"
 
 namespace server {
     void setInput(dsp::stream<dsp::complex_t>* stream);

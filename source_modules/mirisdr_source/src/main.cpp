@@ -1,6 +1,5 @@
 #include <utils/flog.h>
 #include <module.h>
-#include <signal_path/signal_path.h>
 #include <core.h>
 #include <config.h>
 #include <gui/smgui.h>
@@ -79,12 +78,12 @@ public:
         config.release();
         selectBySerial(confSerial);
 
-        sourceManager.registerSource("MiriSDR", &handler);
+        core::sourceManager.registerSource("MiriSDR", &handler);
     }
 
     ~MirisdrSourceModule() {
         stop(this);
-        sourceManager.unregisterSource("MiriSDR");
+        core::sourceManager.unregisterSource("MiriSDR");
     }
 
     void postInit() {}

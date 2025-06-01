@@ -16,10 +16,7 @@ namespace core {
     ModuleManager moduleManager;
     ModuleComManager modComManager;
     CommandArgsParser args;
-
-    void setInputSampleRate(double samplerate) {
-        server::setInputSampleRate(samplerate);
-    }
+    SourceManager sourceManager;
 };
 
 // main

@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <dsp/stream.h>
-#include <dsp/types.h>
-#include <utils/event.h>
+#include "dsp/stream.h"
+#include "dsp/types.h"
+#include "utils/event.h"
 
 class SourceManager {
 public:

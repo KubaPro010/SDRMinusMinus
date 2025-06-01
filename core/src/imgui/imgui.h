@@ -1,4 +1,13 @@
 #pragma once
+#include <stddef.h>
+#include <string.h>
+#include <stdarg.h>
+
+#ifndef IM_ASSERT
+#include <assert.h>
+#define IM_ASSERT(_EXPR)            assert(_EXPR)
+#endif
+
 typedef int ImGuiSliderFlags;
 typedef int ImGuiPopupFlags;
 typedef int ImGuiInputTextFlags;
@@ -120,13 +129,6 @@ enum ImGuiTableFlags_
     ImGuiTableFlags_SortTristate               = 1 << 27,
     ImGuiTableFlags_SizingMask_                = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_SizingFixedSame | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_SizingStretchSame
 };
-#ifndef IM_ASSERT
-#include <assert.h>
-#define IM_ASSERT(_EXPR)            assert(_EXPR)
-#endif
-#include <stddef.h>
-#include <string.h>
-#include <stdarg.h>
 struct ImVec2
 {
     float                                   x, y;

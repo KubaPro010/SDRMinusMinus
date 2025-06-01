@@ -56,72 +56,56 @@ namespace SmGui {
         for (int i = 0; i < elemCount;) {
             // Get element
             DrawListElem& elem = elements[i++];
-            if (elem.type != DRAW_LIST_ELEM_TYPE_DRAW_STEP) { continue; }
+            if (elem.type != DRAW_LIST_ELEM_TYPE_DRAW_STEP) continue;
 
             // Format calls
-            if (elem.step == DRAW_STEP_FILL_WIDTH) { FillWidth(); }
-            else if (elem.step == DRAW_STEP_SAME_LINE) { SameLine(); }
-            else if (elem.step == DRAW_STEP_BEGIN_DISABLED) { BeginDisabled(); }
-            else if (elem.step == DRAW_STEP_END_DISABLED) { EndDisabled(); }
+            if (elem.step == DRAW_STEP_FILL_WIDTH) FillWidth();
+            else if (elem.step == DRAW_STEP_SAME_LINE) SameLine();
+            else if (elem.step == DRAW_STEP_BEGIN_DISABLED) BeginDisabled();
+            else if (elem.step == DRAW_STEP_END_DISABLED) EndDisabled();
 
             // Widget Calls
             else if (elem.step == DRAW_STEP_COMBO) {
-                if (Combo(elements[i].str.c_str(), &elements[i+1].i, elements[i+2].str.c_str(), elements[i+3].i)) {
-                    SET_DIFF_INT(elements[i].str, elements[i+1].i);
-                }
+                if (Combo(elements[i].str.c_str(), &elements[i+1].i, elements[i+2].str.c_str(), elements[i+3].i)) SET_DIFF_INT(elements[i].str, elements[i+1].i);
                 i += 4;
             }
             else if (elem.step == DRAW_STEP_BUTTON) {
-                if (Button(elements[i].str.c_str(), ImVec2(elements[i+1].f, elements[i+2].f))) {
-                    SET_DIFF_VOID(elements[i].str);
-                }
+                if (Button(elements[i].str.c_str(), ImVec2(elements[i+1].f, elements[i+2].f))) SET_DIFF_VOID(elements[i].str);
                 i += 3;
             }
             else if (elem.step == DRAW_STEP_COLUMNS) {
                 Columns(elements[i].i, elements[i+1].str.c_str(), elements[i+2].b);
                 i += 3;
             }
-            else if (elem.step == DRAW_STEP_NEXT_COLUMN) { NextColumn(); }
+            else if (elem.step == DRAW_STEP_NEXT_COLUMN) NextColumn();
             else if (elem.step == DRAW_STEP_RADIO_BUTTON) {
-                if (RadioButton(elements[i].str.c_str(), elements[i+1].b)) {
-                    SET_DIFF_VOID(elements[i].str);
-                }
+                if (RadioButton(elements[i].str.c_str(), elements[i+1].b)) SET_DIFF_VOID(elements[i].str);
                 i += 2;
             }
-            else if (elem.step == DRAW_STEP_BEGIN_GROUP) { BeginGroup(); }
-            else if (elem.step == DRAW_STEP_END_GROUP) { EndGroup(); }
+            else if (elem.step == DRAW_STEP_BEGIN_GROUP) BeginGroup();
+            else if (elem.step == DRAW_STEP_END_GROUP) EndGroup();
             else if (elem.step == DRAW_STEP_LEFT_LABEL) {
                 LeftLabel(elements[i].str.c_str());
                 i++;
             }
             else if (elem.step == DRAW_STEP_SLIDER_INT) {
-                if (SliderInt(elements[i].str.c_str(), &elements[i+1].i, elements[i+2].i, elements[i+3].i, (FormatString)elements[i+4].i, elements[i+5].i)) {
-                    SET_DIFF_INT(elements[i].str, elements[i+1].i);
-                }
+                if (SliderInt(elements[i].str.c_str(), &elements[i+1].i, elements[i+2].i, elements[i+3].i, (FormatString)elements[i+4].i, elements[i+5].i)) SET_DIFF_INT(elements[i].str, elements[i+1].i);
                 i += 6;
             }
             else if (elem.step == DRAW_STEP_SLIDER_FLOAT_WITH_STEPS) {
-                if (SliderFloatWithSteps(elements[i].str.c_str(), &elements[i+1].f, elements[i+2].f, elements[i+3].f, elements[i+4].f, (FormatString)elements[i+5].i)) {
-                    SET_DIFF_FLOAT(elements[i].str, elements[i+1].f);
-                }
+                if (SliderFloatWithSteps(elements[i].str.c_str(), &elements[i+1].f, elements[i+2].f, elements[i+3].f, elements[i+4].f, (FormatString)elements[i+5].i)) SET_DIFF_FLOAT(elements[i].str, elements[i+1].f);
                 i += 6;
             }
             else if (elem.step == DRAW_STEP_INPUT_INT) {
-                if (InputInt(elements[i].str.c_str(), &elements[i+1].i, elements[i+2].i, elements[i+3].i, elements[i+4].i)) {
-                    SET_DIFF_INT(elements[i].str, elements[i+1].i);
-                }
+                if (InputInt(elements[i].str.c_str(), &elements[i+1].i, elements[i+2].i, elements[i+3].i, elements[i+4].i)) SET_DIFF_INT(elements[i].str, elements[i+1].i);
                 i += 5;
             }
             else if (elem.step == DRAW_STEP_CHECKBOX) {
-                if (Checkbox(elements[i].str.c_str(), &elements[i+1].b)) {
-                    SET_DIFF_BOOL(elements[i].str, elements[i+1].b);
-                }
+                if (Checkbox(elements[i].str.c_str(), &elements[i+1].b)) SET_DIFF_BOOL(elements[i].str, elements[i+1].b);
                 i += 2;
             }
             else if (elem.step == DRAW_STEP_SLIDER_FLOAT) {
-                if (SliderFloat(elements[i].str.c_str(), &elements[i+1].f, elements[i+2].f, elements[i+3].f, (FormatString)elements[i+4].i, elements[i+5].i)) {
-                    SET_DIFF_FLOAT(elements[i].str, elements[i+1].f);
-                }
+                if (SliderFloat(elements[i].str.c_str(), &elements[i+1].f, elements[i+2].f, elements[i+3].f, (FormatString)elements[i+4].i, elements[i+5].i)) SET_DIFF_FLOAT(elements[i].str, elements[i+1].f);
                 i += 6;
             }
             else if (elem.step == DRAW_STEP_INPUT_TEXT) {
@@ -151,26 +135,18 @@ namespace SmGui {
                     while (i < elemCount && !(elements[i].type == DRAW_LIST_ELEM_TYPE_DRAW_STEP && elements[i].step == DRAW_STEP_END_POPUP)) { i++; }
                     i++;
                 }
-                else {
-                    i += 2;
-                }
+                else i += 2;
             }
-            else if (elem.step == DRAW_STEP_END_POPUP) {
-                EndPopup();
-            }
+            else if (elem.step == DRAW_STEP_END_POPUP) EndPopup();
             else if (elem.step == DRAW_STEP_BEGIN_TABLE) {
                 if (!BeginTable(elements[i].str.c_str(), elements[i+1].i, elements[i+2].i, ImVec2(elements[i+3].f, elements[i+4].f), elements[i+5].f)) {
                     i += 6;
                     while (i < elemCount && !(elements[i].type == DRAW_LIST_ELEM_TYPE_DRAW_STEP && elements[i].step == DRAW_STEP_END_TABLE)) { i++; }
                     i++;
                 }
-                else {
-                    i += 6;
-                }
+                else i += 6;
             }
-            else if (elem.step == DRAW_STEP_END_TABLE) {
-                EndTable();
-            }
+            else if (elem.step == DRAW_STEP_END_TABLE) EndTable();
             else if (elem.step == DRAW_STEP_TABLE_NEXT_ROW) {
                 TableNextRow(elements[i].i, elements[i+1].f);
                 i += 2;
@@ -183,11 +159,9 @@ namespace SmGui {
                 SetNextItemWidth(elements[i].f);
                 i++;
             }
-            else {
-                flog::error("Invalid widget in Drawlist");
-            }
+            else flog::error("Invalid widget in Drawlist");
 
-            if (elem.step != DRAW_STEP_FILL_WIDTH) { nextItemFillWidth = false; }
+            if (elem.step != DRAW_STEP_FILL_WIDTH) nextItemFillWidth = false;
         }
     }
 
@@ -238,9 +212,7 @@ namespace SmGui {
             elem.step = (DrawStep)data[i++];
             elem.forceSync = data[i++];
         }
-        else if (elem.type == DRAW_LIST_ELEM_TYPE_BOOL && len-- >= 1) {
-            elem.b = data[i++];
-        }
+        else if (elem.type == DRAW_LIST_ELEM_TYPE_BOOL && len-- >= 1) elem.b = data[i++];
         else if (elem.type == DRAW_LIST_ELEM_TYPE_INT && len >= 4) {
             elem.i = *(int*)&data[i];
             i += 4;
@@ -255,9 +227,7 @@ namespace SmGui {
             elem.str = std::string(&data[i + 2], &data[i + 2 + slen]);
             i += slen + 2;
         }
-        else {
-            return -1;
-        }
+        else return -1;
 
         return i;
     }
@@ -293,7 +263,7 @@ namespace SmGui {
     int DrawList::storeItem(DrawListElem& elem, void* data, int len) {
         // Check size requirement
         uint8_t* buf = (uint8_t*)data;
-        if (len < 1) { return -1; }
+        if (len < 1) return -1;
         int i = 0;
         len--;
 
@@ -323,9 +293,7 @@ namespace SmGui {
             memcpy(&buf[i + 2], elem.str.c_str(), slen);
             i += slen + 2;
         }
-        else {
-            return -1;
-        }
+        else return -1;
 
         return i;
     }
@@ -358,9 +326,7 @@ namespace SmGui {
         int size = 0;
 
         // Iterate through all element to add up the total size
-        for (auto& elem : elements) {
-            size += getItemSize(elem);
-        }
+        for (auto& elem : elements) size += getItemSize(elem);
 
         return size;
     }
@@ -450,19 +416,19 @@ namespace SmGui {
 
     // Format functions
     void FillWidth() {
-        if (rdl) { rdl->pushStep(DRAW_STEP_FILL_WIDTH, false); }
+        if (rdl) rdl->pushStep(DRAW_STEP_FILL_WIDTH, false);
     }
 
     void SameLine() {
-        if (rdl) { rdl->pushStep(DRAW_STEP_SAME_LINE, false); }
+        if (rdl) rdl->pushStep(DRAW_STEP_SAME_LINE, false);
     }
 
     void BeginDisabled() {
-        if (rdl) { rdl->pushStep(DRAW_STEP_BEGIN_DISABLED, false); }
+        if (rdl) rdl->pushStep(DRAW_STEP_BEGIN_DISABLED, false);
     }
 
     void EndDisabled() {
-        if (rdl) { rdl->pushStep(DRAW_STEP_END_DISABLED, false); }
+        if (rdl) rdl->pushStep(DRAW_STEP_END_DISABLED, false);
     }
 
 
@@ -506,7 +472,7 @@ namespace SmGui {
     }
     
     void NextColumn() {
-        if (rdl) { rdl->pushStep(DRAW_STEP_NEXT_COLUMN, false); }
+        if (rdl) rdl->pushStep(DRAW_STEP_NEXT_COLUMN, false);
     }
     
     bool RadioButton(const char *label, bool active) {
@@ -520,11 +486,11 @@ namespace SmGui {
     }
     
     void BeginGroup() {
-        if (rdl) { rdl->pushStep(DRAW_STEP_BEGIN_GROUP, false); }
+        if (rdl) rdl->pushStep(DRAW_STEP_BEGIN_GROUP, false);
     }
     
     void EndGroup() {
-        if (rdl) { rdl->pushStep(DRAW_STEP_END_GROUP, false); }
+        if (rdl) rdl->pushStep(DRAW_STEP_END_GROUP, false);
     }
     
     void LeftLabel(const char *text) {
@@ -696,9 +662,7 @@ namespace SmGui {
     }
 
     void EndTable() {
-        if (rdl) {
-            rdl->pushStep(DRAW_STEP_END_TABLE, false);
-        }
+        if (rdl) rdl->pushStep(DRAW_STEP_END_TABLE, false);
     }
 
     void TableNextRow(ImGuiTableRowFlags row_flags, float min_row_height) {

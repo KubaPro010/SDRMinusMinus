@@ -1,8 +1,7 @@
-#include <server.h>
-#include <signal_path/source.h>
-#include <utils/flog.h>
-#include <signal_path/signal_path.h>
-#include <core.h>
+#include "server.h"
+#include "source.h"
+#include "utils/flog.h"
+#include "core.h"
 
 SourceManager::SourceManager() {
 }

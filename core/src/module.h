@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include <map>
-#include <utils/json.hpp>
-#include <utils/event.h>
+#include "utils/json.hpp"
+#include "utils/event.h"
 
 #define SDRMM_EXPORT extern
 

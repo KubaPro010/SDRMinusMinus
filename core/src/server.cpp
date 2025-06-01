@@ -1,13 +1,13 @@
 #include "server.h"
 #include "core.h"
-#include <utils/flog.h>
-#include <version.h>
-#include <config.h>
+#include "utils/flog.h"
+#include "version.h"
+#include "config.h"
 #include <filesystem>
-#include <dsp/types.h>
-#include <signal_path/signal_path.h>
-#include <gui/smgui.h>
-#include <utils/optionlist.h>
+#include "dsp/types.h"
+#include "source.h"
+#include "gui/smgui.h"
+#include "utils/optionlist.h"
 #include "dsp/compression/sample_stream_compressor.h"
 #include "dsp/sink/handler_sink.h"
 #include <zstd.h>
@@ -22,9 +22,9 @@ namespace server {
     dsp::compression::SampleStreamCompressor comp;
     dsp::sink::Handler<uint8_t> hnd;
     net::Conn client;
-    uint8_t* rbuf = NULL;
-    uint8_t* sbuf = NULL;
-    uint8_t* bbuf = NULL;
+    uint8_t* rbuf = NULL; // Receive buffer
+    uint8_t* sbuf = NULL; // General send buffer
+    uint8_t* bbuf = NULL; // Used for sending the baseband data
 
     PacketHeader* r_pkt_hdr = NULL;
     uint8_t* r_pkt_data = NULL;
@@ -103,7 +103,7 @@ namespace server {
         // Do post-init
         core::moduleManager.doPostInitAll();
 
-        sourceManager.selectSource(SourceName);
+        core::sourceManager.selectSource(SourceName);
 
         std::string host = (std::string)core::args["addr"];
         int port = (int)core::args["port"];
@@ -153,7 +153,7 @@ namespace server {
         client->readAsync(sizeof(PacketHeader), rbuf, _packetHandler, NULL);
 
         // Perform settings reset
-        sourceManager.stop();
+        core::sourceManager.stop();
         comp.setPCMType(dsp::compression::PCM_TYPE_F32);
         compression = false;
 
@@ -237,15 +237,15 @@ namespace server {
             else renderUI(NULL, diffId.str, diffValue);
         }
         else if (cmd == COMMAND_START) {
-            sourceManager.start();
+            core::sourceManager.start();
             running = true;
         }
         else if (cmd == COMMAND_STOP) {
-            sourceManager.stop();
+            core::sourceManager.stop();
             running = false;
         }
         else if (cmd == COMMAND_SET_FREQUENCY && len == 8) {
-            sourceManager.tune(*(double*)data);
+            core::sourceManager.tune(*(double*)data);
             sendCommandAck(COMMAND_SET_FREQUENCY, 0);
         }
         else if (cmd == COMMAND_SET_SAMPLE_TYPE && len == 1) {
@@ -261,25 +261,18 @@ namespace server {
 
     void drawMenu() {
         SmGui::Text(SourceName);
-        sourceManager.showSelectedMenu();
+        core::sourceManager.showSelectedMenu();
     }
 
     void renderUI(SmGui::DrawList* dl, std::string diffId, SmGui::DrawListElem diffValue) {
+        SmGui::setDiff(diffId, diffValue);
         if (dl && !diffId.empty()) {
-            SmGui::setDiff(diffId, diffValue);
             drawMenu();
-
             SmGui::setDiff("", dummyElem);
-            SmGui::startRecord(dl);
-            drawMenu();
-            SmGui::stopRecord();
         }
-        else {
-            SmGui::setDiff(diffId, diffValue);
-            SmGui::startRecord(dl);
-            drawMenu();
-            SmGui::stopRecord();
-        }
+        SmGui::startRecord(dl);
+        drawMenu();
+        SmGui::stopRecord();
     }
 
     void sendUI(Command originCmd, std::string diffId, SmGui::DrawListElem diffValue) {
