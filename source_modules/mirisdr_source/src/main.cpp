@@ -5,6 +5,7 @@
 #include <gui/smgui.h>
 #include <thread>
 #include <mirisdr.h>
+#include <server.h>
 
 #define FLAVOR MIRISDR_HW_DEFAULT
 // #define FLAVOR MIRISDR_HW_SDRPLAY
@@ -181,7 +182,7 @@ public:
 private:
     static void menuSelected(void* ctx) {
         MirisdrSourceModule* _this = (MirisdrSourceModule*)ctx;
-        core::setInputSampleRate(_this->sampleRate);
+        server::setInputSampleRate(_this->sampleRate);
         flog::info("MirisdrSourceModule '{0}': Menu Select!", _this->name);
     }
 
@@ -367,14 +368,14 @@ private:
         if (SmGui::Button(CONCAT("Refresh##_mirisdr_refr_", _this->name))) {
             _this->refresh();
             _this->selectBySerial(_this->selectedSerial);
-            core::setInputSampleRate(_this->sampleRate);
+            server::setInputSampleRate(_this->sampleRate);
         }
 
         SmGui::FillWidth();
         SmGui::ForceSync();
         if (SmGui::Combo(CONCAT("##_mirisdr_sr_sel_", _this->name), &_this->srId, sampleRatesTxt)) {
             _this->sampleRate = sampleRates[_this->srId];
-            core::setInputSampleRate(_this->sampleRate);
+            server::setInputSampleRate(_this->sampleRate);
             config.acquire();
             config.conf["devices"][_this->selectedSerial]["sampleRate"] = _this->sampleRate;
             config.release(true);
